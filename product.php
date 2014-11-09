@@ -108,7 +108,6 @@ class Product {
                     ':product_id'=>$last_id,
                     ':img'=>$value));
 
-                $db->handle->commit();
             } catch (Exception $e) {
                 if ($db->debug === True) {
                     var_dump($e);

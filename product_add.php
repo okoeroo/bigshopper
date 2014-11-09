@@ -39,9 +39,7 @@ if ($db && $db->handle === NULL) {
 /* Fetch POST info and generate a Player */
 try {
     $product = new Product;
-    echo 'new product';
     $product->fillFromPost();
-    echo 'fillFromPost';
 } catch (Exception $e) {
     var_dump($e);
     return;
@@ -53,7 +51,11 @@ if (!$product->store($db)) {
     return;
 }
 
-echo 'Great success!';
+
+echo '<!DOCTYPE HTML>'."\n";
+echo '<html lang="en-US"><head><meta charset="UTF-8">'."\n";
+echo '<meta http-equiv="refresh" content="1;url=http://devel.koeroo.net/admin.php">';
+echo '</head></html>';
+
 
 ?>
-
