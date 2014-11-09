@@ -41,6 +41,7 @@ CREATE UNIQUE INDEX index_products_dimensions       ON products (dimensions);
 
 CREATE TABLE product_images (
         id              INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        product_id      INT,
         img             LONGBLOB NOT NULL,
         changed_on      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                             ON UPDATE CURRENT_TIMESTAMP
