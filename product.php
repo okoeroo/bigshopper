@@ -9,7 +9,7 @@ class Product {
     public $clothing_size;
     public $dimensions;
     public $changed_on;
-    public $images;
+    public $images = array();
 
     /* function __construct() { */
     function fillFromPost() {
@@ -44,10 +44,14 @@ class Product {
             }
         }
 
-        /* Main image */
-        $this->images            = new array();
-        if (! empty($_POST["image"])) {
-            array_push($this->images, $_POST["image"]);
+        $this->images = array();
+        $file = $_FILES['image']['tmp_name'];
+        $image_check = getimagesize($_FILES['image']['tmp_name']);
+        if($image_check==false) {
+            echo 'Not a Valid Image';
+        } else {
+            $image = file_get_contents($_FILES['image']['tmp_name']);
+            array_push($this->images, $image);
         }
     }
 
@@ -70,6 +74,7 @@ class Product {
                '             :clothing_size, :dimensions)';
 
         try {
+            $db->handle->beginTransaction();
             $sth = $db->handle->prepare($sql);
             $sth->execute(array(
                 ':sku'=>$this->sku,
@@ -78,12 +83,42 @@ class Product {
                 ':price'=>$this->price,
                 ':clothing_size'=>$this->clothing_size,
                 ':dimensions'=>$this->dimensions));
+
+            $last_id = $db->handle->lastInsertId();
+
+
         } catch (Exception $e) {
             if ($db->debug === True) {
                 var_dump($e);
             }
+            $db->handle->rollback(); 
             return False;
         }
+
+
+        /* Store images */
+        foreach ($this->images as $value) {
+            $sql = 'INSERT INTO product_images' .
+                   '            (product_id, img) '.
+                   '     VALUES (:product_id, :img)';
+
+            try {
+                $sth = $db->handle->prepare($sql);
+                $sth->execute(array(
+                    ':product_id'=>$last_id,
+                    ':img'=>$value));
+
+                $db->handle->commit();
+            } catch (Exception $e) {
+                if ($db->debug === True) {
+                    var_dump($e);
+                }
+                $db->handle->rollback(); 
+                return False;
+            }
+        }
+
+        $db->handle->commit();
         return True;
     }
 }

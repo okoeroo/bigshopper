@@ -1,8 +1,12 @@
 <?php
 
-$db_dsn  = 'mysql:host=127.0.0.1;port=3306;dbname=bigshopper';
-$db_user = 'bigshopper';
-$db_pass = 'CHANGEME';
+class Database {
+    public $dsn  = 'mysql:host=127.0.0.1;port=3306;dbname=bigshopper';
+    public $user = 'bigshopper';
+    public $pass = 'CHANGEME';
+    public $debug = True;
+    public $handle;
+}
 
 class Site {
     public $title = 'Test title';
