@@ -1,8 +1,5 @@
 <?php
 
-require 'config.php';
-
-
 class Head {
     public $title;
     public $keywords;

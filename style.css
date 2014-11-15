@@ -1,32 +1,52 @@
+body {
+    font-family: ProximaNovaExCn-Black,"Montserrat Bold 700",Helvetica,Arial,sans-serif;
+}
+
 .header {
-    background-color:black;
-    color:white;
+    background-color:#feeaeb;
+    color:#de5873;
     text-align:center;
-    padding:5px; 
+    padding:1px; 
+    font-size: 30px;
 }
-header {
-    background-color:black;
-    color:white;
-    text-align:center;
-    padding:5px; 
-}
-nav {
+
+.nav {
     line-height:30px;
-    background-color:#eeeeee;
-    height:300px;
-    width:100px;
+    background-color:#de5873;
+    color:#feeaeb;
+    /* height:300px; */
+    width:200px;
     float:right;
-    padding:5px; 
+    font-size: 20px;
 }
-section {
+
+.nav_block {
+    list-style-type: none;
+    text-align:center;
+    width:200px;
+}
+
+.nav_elem {
+    width:200px;
+    text-wrap: normal;
+}
+
+.nav_elem:hover { 
+    background-color:#feeaeb;
+    color:#de5873;
+}
+
+.section {
     width:350px;
     float:left;
     padding:10px; 
 }
-footer {
+
+.footer {
     background-color:black;
     color:white;
     clear:both;
     text-align:center;
     padding:5px; 
 }
+

@@ -11,7 +11,20 @@ class Product {
     public $changed_on;
     public $images = array();
 
-    /* function __construct() { */
+    function fillFromRow($row) {
+        $this->id            = $row['id'];
+        $this->sku           = $row['sku'];
+        $this->name          = $row['name'];
+        $this->description   = $row['description'];
+        $this->price         = $row['price'];
+        $this->clothing_size = $row['clothing_size'];
+        $this->dimensions    = $row['dimensions'];
+        $this->changed_on    = $row['changed_on'];
+
+        $img                 = $row['img'];
+        array_push($this->images, $img);
+    }
+
     function fillFromPost() {
         $this->sku              = trim($_POST["sku"]);
         if (! filter_var($this->sku, FILTER_SANITIZE_STRING)) {
@@ -53,17 +66,6 @@ class Product {
             $image = file_get_contents($_FILES['image']['tmp_name']);
             array_push($this->images, $image);
         }
-    }
-
-    function fillFromRow($row) {
-        $this->id               = $row['id'];
-        $this->sku              = $row['sku'];
-        $this->name             = $row['name'];
-        $this->description      = $row['description'];
-        $this->price            = $row['price'];
-        $this->clothing_size    = $row['clothing_size'];
-        $this->dimensions       = $row['dimensions'];
-        $this->changed_on       = $row['changed_on'];
     }
 
     function store($db) {
@@ -121,5 +123,48 @@ class Product {
         return True;
     }
 }
+
+function products_load($db) {
+    $sql = 'SELECT products.id, sku, name, description, price, clothing_size, dimensions, products.changed_on, img FROM products, product_images WHERE product_images.product_id = products.id';
+    $products = array();
+
+    $sth = $db->handle->prepare($sql);
+    if (! $sth->execute()) {
+        return NULL;
+    }
+    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+
+    foreach($rs as $row) {
+        $prod = new Product();
+        $prod->fillFromRow($row);
+
+        array_push($products, $prod);
+    }
+    return $products;
+}
+
+function sql_to_html_table($dbh, $sql) {
+    $sth = $dbh->prepare($sql);
+    if (! $sth->execute()) {
+        return NULL;
+    }
+    echo '<table border=1>';
+    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    echo '<tr>';
+    for ($i = 0; $i < $sth->columnCount(); $i++) {
+        $meta = $sth->getColumnMeta($i);
+        echo '<th>' . $meta['name'] . '</th>';
+    }
+    echo '</tr>';
+    foreach($rs as $row) {
+        echo '<tr>';
+        foreach($row as $field) {
+            echo '<td>' . $field . '</td>';
+        }
+        echo '</tr>';
+    }
+    echo '</table>';
+}
+
 
 ?>
