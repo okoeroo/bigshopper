@@ -125,8 +125,13 @@ class Product {
 }
 
 function products_load($db) {
-    $sql = 'SELECT products.id, sku, name, description, price, clothing_size, dimensions, products.changed_on, img FROM products, product_images WHERE product_images.product_id = products.id';
     $products = array();
+
+    $sql = 'SELECT products.id, sku, name, description, '.
+           '       price, clothing_size, dimensions, '.
+           '       products.changed_on, img '.
+           '  FROM products, product_images '.
+           ' WHERE product_images.product_id = products.id';
 
     $sth = $db->handle->prepare($sql);
     if (! $sth->execute()) {

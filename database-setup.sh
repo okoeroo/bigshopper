@@ -34,9 +34,9 @@ CREATE TABLE products (
                             ON UPDATE CURRENT_TIMESTAMP
     );
 
-CREATE UNIQUE INDEX index_products_sku              ON products (sku);
-CREATE UNIQUE INDEX index_products_clothing_size    ON products (clothing_size);
-CREATE UNIQUE INDEX index_products_dimensions       ON products (dimensions);
+CREATE UNIQUE   INDEX index_products_sku              ON products (sku);
+CREATE          INDEX index_products_clothing_size    ON products (clothing_size);
+CREATE          INDEX index_products_dimensions       ON products (dimensions);
 
 
 CREATE TABLE product_images (
@@ -45,6 +45,29 @@ CREATE TABLE product_images (
         img             LONGBLOB NOT NULL,
         changed_on      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                             ON UPDATE CURRENT_TIMESTAMP
+    );
+
+CREATE TABLE categories (
+        id              INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        name            VARCHAR(100) NOT NULL,
+        description     VARCHAR(1024),
+        changed_on      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            ON UPDATE CURRENT_TIMESTAMP
+    );
+
+CREATE TABLE products_categories (
+        id              INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        product_id      INT NOT NULL,
+        category_id     INT NOT NULL
+    );
+
+CREATE INDEX index_products_categories_category_id ON products_categories (category_id);
+CREATE INDEX index_products_categories_product_id  ON products_categories (product_id);
+
+CREATE TABLE articles (
+        id              INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        subject         VARCHAR(1024),
+        body            VARCHAR(65536)
     );
 
 CREATE TABLE sessions (
