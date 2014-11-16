@@ -9,6 +9,7 @@ class Product {
     public $clothing_size;
     public $dimensions;
     public $changed_on;
+    public $category;
     public $images = array();
 
     function fillFromRow($row) {
@@ -20,6 +21,7 @@ class Product {
         $this->clothing_size = $row['clothing_size'];
         $this->dimensions    = $row['dimensions'];
         $this->changed_on    = $row['changed_on'];
+        /* $this->category      =  */
 
         $img                 = $row['img'];
         array_push($this->images, $img);
@@ -55,6 +57,10 @@ class Product {
             if (! filter_var($this->dimensions, FILTER_SANITIZE_STRING)) {
                 throw new Exception('input check failure dimensions');
             }
+        }
+        $this->category         = trim($_POST["category"]);
+        if (! filter_var($this->sku, FILTER_SANITIZE_STRING)) {
+            throw new Exception('input check failure category');
         }
 
         $this->images = array();
@@ -119,6 +125,10 @@ class Product {
             }
         }
 
+
+        /* Add to products_categories list */
+
+        /* Commit */
         $db->handle->commit();
         return True;
     }
