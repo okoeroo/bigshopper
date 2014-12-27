@@ -9,7 +9,6 @@ class Product {
     public $clothing_size;
     public $dimensions;
     public $changed_on;
-    public $category;
     public $images = array();
 
     function fillFromRow($row) {
@@ -21,7 +20,6 @@ class Product {
         $this->clothing_size = $row['clothing_size'];
         $this->dimensions    = $row['dimensions'];
         $this->changed_on    = $row['changed_on'];
-        /* $this->category      =  */
 
         $img                 = $row['img'];
         array_push($this->images, $img);
@@ -57,10 +55,6 @@ class Product {
             if (! filter_var($this->dimensions, FILTER_SANITIZE_STRING)) {
                 throw new Exception('input check failure dimensions');
             }
-        }
-        $this->category         = trim($_POST["category"]);
-        if (! filter_var($this->sku, FILTER_SANITIZE_STRING)) {
-            throw new Exception('input check failure category');
         }
 
         $this->images = array();
@@ -126,8 +120,6 @@ class Product {
         }
 
 
-        /* Add to products_categories list */
-
         /* Commit */
         $db->handle->commit();
         return True;
@@ -157,6 +149,76 @@ function products_load($db) {
     }
     return $products;
 }
+
+function product_search_by_id($id) {
+    $sql = 'SELECT products.id, sku, name, description, '.
+           '       price, clothing_size, dimensions, '.
+           '       products.changed_on, img '.
+           '  FROM products, product_images '.
+           ' WHERE product_images.product_id = products.id '.
+           '   AND products.id = :product_id';
+
+    $sth = $db->handle->prepare($sql);
+    if (! $sth->execute(array(
+        ':product_id'=>$id))) {
+        return NULL;
+    }
+    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+
+    foreach($rs as $row) {
+        $prod = new Product();
+        $prod->fillFromRow($row);
+        return $prod;
+    }
+    return NULL;
+}
+
+function product_search_by_sku($sku) {
+    $sql = 'SELECT products.id, sku, name, description, '.
+           '       price, clothing_size, dimensions, '.
+           '       products.changed_on, img '.
+           '  FROM products, product_images '.
+           ' WHERE product_images.product_id = products.id '.
+           '   AND products.sku = :sku';
+
+    $sth = $db->handle->prepare($sql);
+    if (! $sth->execute(array(
+        ':sku'=>$sku))) {
+        return NULL;
+    }
+    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+
+    foreach($rs as $row) {
+        $prod = new Product();
+        $prod->fillFromRow($row);
+        return $prod;
+    }
+    return NULL;
+}
+
+function product_search_by_name($name) {
+    $sql = 'SELECT products.id, sku, name, description, '.
+           '       price, clothing_size, dimensions, '.
+           '       products.changed_on, img '.
+           '  FROM products, product_images '.
+           ' WHERE product_images.product_id = products.id '.
+           '   AND products.name = :name';
+
+    $sth = $db->handle->prepare($sql);
+    if (! $sth->execute(array(
+        ':name'=>$name))) {
+        return NULL;
+    }
+    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+
+    foreach($rs as $row) {
+        $prod = new Product();
+        $prod->fillFromRow($row);
+        return $prod;
+    }
+    return NULL;
+}
+
 
 function sql_to_html_table($dbh, $sql) {
     $sth = $dbh->prepare($sql);

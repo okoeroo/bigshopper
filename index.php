@@ -1,11 +1,12 @@
 <?php
 
-require 'config.php';
-require 'database.php';
-require 'build.php';
-require 'product.php';
-require 'navigation.php';
-require 'article.php';
+require_once 'config.php';
+require_once 'database.php';
+require_once 'build.php';
+require_once 'product.php';
+require_once 'navigation.php';
+require_once 'article.php';
+require_once 'session.php';
 
 
 /* Open DB */
@@ -14,6 +15,9 @@ if ($db && $db->handle === NULL) {
     http_response_code(500);
     return;
 }
+
+/* Session management */
+session_mngt($db);
 
 $head = new Head;
 $head->display();
@@ -29,5 +33,6 @@ $products = products_load($db);
 
 $tail = new Tail;
 $tail->display();
+
 
 ?>
