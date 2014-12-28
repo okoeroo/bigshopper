@@ -2,6 +2,30 @@
 
 require_once 'config.php';
 
+class Session {
+    public $id;
+    public $token;
+    public $valid_for_seconds;
+    public $created_on;
+
+    function fillFromRow($row) {
+        $this->id                = $row['id'];
+        $this->token             = $row['token'];
+        $this->valid_for_seconds = $row['valid_for_seconds'];
+        $this->created_on_unix   = $row['created_on_unix'];
+    }
+
+    function is_valid() {
+        $site = new Site;
+
+        /* Both the cookie lifetime and the max cookie lifetime template must be valid */
+        if ((time() < ($this->created_on_unix + $this->valid_for_seconds)) &&
+            (time() < ($this->created_on_unix + $site->cookie_seconds))) {
+            return True;
+        }
+        return False;
+    }
+}
 
 function secure_random_sha256() {
     $i = 256;
@@ -15,66 +39,136 @@ function secure_random_sha256() {
                 False);
 }
 
+function session_search_by_token($db, $token) {
+    $sql = 'SELECT id, token, ' .
+           '       valid_for_seconds, ' .
+           '       created_on_unix ' .
+           '  FROM sessions '.
+           ' WHERE sessions.token = :token';
 
-function session_cookie_new() {
+    $sth = $db->handle->prepare($sql);
+    if (! $sth->execute(array(
+        ':token'=>$token))) {
+        return NULL;
+    }
+    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+
+    foreach($rs as $row) {
+        $session = new Session();
+        $session ->fillFromRow($row);
+        return $session;
+    }
+    return NULL;
+}
+
+function session_insert_token($db, $token, $valid_for_seconds) {
+    $sql = 'INSERT INTO sessions' .
+           '            (token, valid_for_seconds, created_on_unix) '.
+           '     VALUES (:token, :valid_for_seconds, :created_on_unix)';
+
+    try {
+        $sth = $db->handle->prepare($sql);
+        $sth->execute(array(
+            ':token'=>$token,
+            ':valid_for_seconds'=>$valid_for_seconds,
+            ':created_on_unix'=>time()));
+
+    } catch (Exception $e) {
+        if ($db->debug === True) {
+            var_dump($e);
+        }
+        return False;
+    }
+    return True;
+}
+
+function session_update_token($db, $token, $valid_for_seconds) {
+    $sql = 'UPDATE sessions '.
+           '   SET valid_for_seconds = :valid_for_seconds, '.
+           '       created_on_unix = :created_on_unix '.
+           ' WHERE token = :token';
+
+    try {
+        $sth = $db->handle->prepare($sql);
+        $sth->execute(array(
+            ':token'=>$token,
+            ':valid_for_seconds'=>$valid_for_seconds,
+            ':created_on_unix'=>time()));
+
+    } catch (Exception $e) {
+        if ($db->debug === True) {
+            var_dump($e);
+        }
+        return False;
+    }
+    return True;
+}
+
+function session_cookie_new($db) {
     $site = new Site;
 
-    /* $sessiontoken = generate_session($dbh, $cookie_hours * 3600); */
     $sessiontoken = secure_random_sha256();
+    $valid_until_for_seconds = time() + $site->cookie_seconds;
 
     setcookie($site->cookie_name,
               $sessiontoken,
-              time()+(3600 * $site->cookie_hours),
+              $valid_until_for_seconds,
+              time() + $site->cookie_seconds,
               '/',
               $site->cookie_scope,
               TRUE);
+
+    session_insert_token($db, $sessiontoken, $site->cookie_seconds);
     return;
 }
 
 
 function session_is_cookie_valid($db, $cookie) {
+    /* Fetch session data */
+    $session = session_search_by_token($db, $cookie);
+    if ($session === NULL) {
+        return False;
+    } else {
+        /* Check if cookie will expire or site has shortened 
+         * the maxlifetime of cookies */
+        return $session->is_valid();
+    }
+
+    /* TODO: IP check */
     return True;
 }
-
 
 function session_mngt($db) {
     $site = new Site;
 
-    /* Already have a cookie? 
-     *  If yes, authenticate it. On failure, generate a new key.
-     *  If no, generate new cookie */
-
-
-    /* Length is 64 bytes, because of the SHA256 output */
+    /* Is cookie set and if set a candidate session cookie?
+     * Length is 64 bytes, because of the SHA256 output */
     if (isset($_COOKIE[$site->cookie_name]) &&
         strlen($_COOKIE[$site->cookie_name]) == 64) {
 
+        /* Is the session cookie valid */
         if (session_is_cookie_valid($db,
                         $_COOKIE[$site->cookie_name])) {
 
-            /* TODO Session is known and valid, thus good */
-            echo "got cookie: " . $_COOKIE[$site->cookie_name];
+            /* Update the cookie lifetime */
+            session_update_token($db, $_COOKIE[$site->cookie_name], $site->cookie_seconds);
 
-            /* TODO Check if cookie will expire in the next 30 minutes */
         } else {
             /* Session went bad, create new session.
              * Note: All passed logon cookies are mute */
-            session_cookie_new();
+            session_cookie_new($db);
+            return;
         }
     } else {
         /* New session to be created */
-        session_cookie_new();
-        echo "set cookie";
-        echo $site->cookie_name;
+        session_cookie_new($db);
+        return;
     }
 
-
-    /* Generate session key, 
-       by generating a random ID, 
-       storing the ID + IP in the DB, 
-       set the cookie. 
-       Later, renew it regularly, */
-
+    return;
 }
 
+/* clean up:
+SELECT id, token, valid_for_seconds, created_on_unix, (valid_for_seconds + created_on_unix) as total from sessions group by id, token, total having  UNIX_TIMESTAMP(now()) > total; 
+*/
 ?>

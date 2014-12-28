@@ -74,7 +74,7 @@ CREATE TABLE sessions (
         id                  INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
         token               VARCHAR(256) NOT NULL,
         valid_for_seconds   INT NOT NULL,
-        created_on          TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_on_unix     INT NOT NULL
     );
 EOF
 
