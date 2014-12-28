@@ -1,0 +1,6 @@
+### Cron Job configuration file
+
+USER='bigshopper'
+PASS='password'
+HOST='127.0.0.1'
+DBNAME='bigshopper'
