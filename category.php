@@ -84,4 +84,9 @@ function product_to_category_add_by_name_name($db, $prod_name, $cat_name) {
     return True;
 }
 
+function category_display_load($db, $cat_name) {
+    echo $cat_name;
+    /* category_search_by_name($cat_name); */
+}
+
 ?>
