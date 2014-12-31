@@ -1,5 +1,7 @@
 <?php
 
+require_once 'config.php';
+
 class Head {
     public $title;
     public $keywords;
@@ -37,6 +39,7 @@ class Head {
         echo '    <meta name="description" content="' . $this->description . '" />' .  "\n";
         /* echo '    <meta name="viewport" content="width=device-width,initial-scale=1" />' .  "\n"; */
         echo '    <link rel="stylesheet" type="text/css" media="all" href="' . $this->stylesheet . '" />' . "\n";
+
         echo '  </head>' . "\n";
         echo '  <body>' . "\n";
 

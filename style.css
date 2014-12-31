@@ -11,6 +11,7 @@ body {
     /* height:100%; */
            margin-right: 10vw;
            margin-left: 10vw;
+    min-width: 75%;
 }
 
 .header {

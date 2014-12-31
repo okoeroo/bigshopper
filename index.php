@@ -10,6 +10,15 @@ require_once 'session.php';
 require_once 'category.php';
 
 
+function show_hardcoded_frontpage($db) {
+    /* Hard coded: article 2 */
+    section_display($db, 2);
+
+    /* Load all products in memory from DB */
+    $products = products_load($db);
+}
+
+
 /* Open DB */
 $db = db_connect();
 if ($db && $db->handle === NULL) {
@@ -33,11 +42,7 @@ $query = explode("&", $_SERVER['QUERY_STRING']);
 /* Weird effect, after exploding the query string always has one element in the
  * array with a zero length string. Bug in PHP? */
 if (count($query) === 1 && strlen($query[0]) === 0) {
-    /* Hard coded: article 2 */
-    section_display($db, 2);
-
-    /* Load all products in memory from DB */
-    $products = products_load($db);
+    show_hardcoded_frontpage($db);
 } else {
     /* Display a product */
     foreach($query as $q) {
@@ -47,6 +52,9 @@ if (count($query) === 1 && strlen($query[0]) === 0) {
         if ($key == "category") {
             /* Load an entire category display here */
             category_display_load($db, $value);
+        } else {
+            /* On error / experimentation, just show the front page */
+            show_hardcoded_frontpage($db);
         }
     }
 }

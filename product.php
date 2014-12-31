@@ -150,7 +150,7 @@ function products_load($db) {
     return $products;
 }
 
-function product_search_by_id($id) {
+function product_search_by_id($db, $id) {
     $sql = 'SELECT products.id, sku, name, description, '.
            '       price, clothing_size, dimensions, '.
            '       products.changed_on, img '.
@@ -173,7 +173,7 @@ function product_search_by_id($id) {
     return NULL;
 }
 
-function product_search_by_sku($sku) {
+function product_search_by_sku($db, $sku) {
     $sql = 'SELECT products.id, sku, name, description, '.
            '       price, clothing_size, dimensions, '.
            '       products.changed_on, img '.
@@ -196,7 +196,7 @@ function product_search_by_sku($sku) {
     return NULL;
 }
 
-function product_search_by_name($name) {
+function product_search_by_name($db, $name) {
     $sql = 'SELECT products.id, sku, name, description, '.
            '       price, clothing_size, dimensions, '.
            '       products.changed_on, img '.
@@ -217,6 +217,33 @@ function product_search_by_name($name) {
         return $prod;
     }
     return NULL;
+}
+
+function products_by_category_id($db, $cat_id) {
+    $products = array();
+
+    $sql = 'SELECT products.id, sku, name, description, '.
+           '       price, clothing_size, dimensions, '.
+           '       products.changed_on, img '.
+           '  FROM products, product_images, products_categories'.
+           ' WHERE product_images.product_id = products.id'.
+           '   AND products_categories.product_id = products.id'.
+           '   AND products_categories.category_id = :category_id';
+
+    $sth = $db->handle->prepare($sql);
+    if (! $sth->execute(array(
+            ':category_id'=>$cat_id))) {
+        return NULL;
+    }
+    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+
+    foreach($rs as $row) {
+        $prod = new Product();
+        $prod->fillFromRow($row);
+
+        array_push($products, $prod);
+    }
+    return $products;
 }
 
 
