@@ -12,6 +12,68 @@ class Category {
         $this->description  = $row['description'];
         $this->changed_on   = $row['changed_on'];
     }
+
+    function fillFromPost() {
+        if (isset($_POST["id"])) {
+            $this->id               = trim($_POST["id"]);
+            if (! filter_var($this->id, FILTER_SANITIZE_NUMBER_INT)) {
+                throw new Exception('input check failure id');
+            }
+        }
+        $this->name             = trim($_POST["name"]);
+        if (! filter_var($this->name, FILTER_SANITIZE_STRING)) {
+            throw new Exception('input check failure name');
+        }
+        $this->description      = trim($_POST["description"]);
+        if (! empty($this->description)) {
+            if (! filter_var($this->description, FILTER_SANITIZE_STRING)) {
+                throw new Exception('input check failure description');
+            }
+        }
+    }
+
+    function store($db) {
+        $sql = 'INSERT INTO categories' .
+               '            (name, description)'.
+               '     VALUES (:name, :description)';
+
+        try {
+            $sth = $db->handle->prepare($sql);
+            $sth->execute(array(
+                ':name'=>$this->name,
+                ':description'=>$this->description));
+
+        } catch (Exception $e) {
+            if ($db->debug === True) {
+                var_dump($e);
+            }
+            return False;
+        }
+
+        return True;
+    }
+
+    function update($db) {
+        $sql = 'UPDATE categories' .
+               '   SET name = :name, description = :description'.
+               ' WHERE id = :id';
+
+        try {
+            $sth = $db->handle->prepare($sql);
+            $sth->execute(array(
+                ':id'=>$this->id,
+                ':name'=>$this->name,
+                ':description'=>$this->description));
+
+        } catch (Exception $e) {
+            if ($db->debug === True) {
+                var_dump($e);
+            }
+            return False;
+        }
+
+        return True;
+    }
 }
 
 
@@ -225,8 +287,8 @@ function category_display_load($db, $cat_id) {
                 echo 'Voeg toe aan winkelwagentje';
                 echo '</td>';
             echo '</tr>';
-        echo '</table>';
-        echo "\n";
+        echo '</table>'."\n";
+        echo '</form>' . "\n";
 
         echo '</td>'."\n";
 
@@ -238,5 +300,6 @@ function category_display_load($db, $cat_id) {
     echo '          </p>'."\n";
     echo '      </div>' . "\n";
 }
+
 
 ?>

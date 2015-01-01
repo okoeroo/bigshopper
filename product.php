@@ -26,6 +26,13 @@ class Product {
     }
 
     function fillFromPost() {
+        if (isset($_POST["id"])) {
+            $this->id               = trim($_POST["id"]);
+            if (! filter_var($this->id, FILTER_SANITIZE_NUMBER_INT)) {
+                throw new Exception('input check failure id');
+            }
+        }
+
         $this->sku              = trim($_POST["sku"]);
         if (! filter_var($this->sku, FILTER_SANITIZE_STRING)) {
             throw new Exception('input check failure sku');

@@ -1,8 +1,9 @@
 <?php
 
 require_once 'build.php';
-require_once 'category.php';
 require_once 'database.php';
+require_once 'category.php';
+require_once 'product.php';
 
 
 /* Open DB */
@@ -14,10 +15,9 @@ if ($db && $db->handle === NULL) {
 
 
 function product_form_field_text($name, $text, $default_value, $max_chars, $placeholder, $autofocus, $required, $autocomplete) {
-    echo '<li>';
     echo '<label for="'.$name.'">'.$text.':</label>';
     echo '<input type="text" name="'.$name.'" id="'.$name.'"';
-    echo ' value="'.$default_value.'" maxlength="'.$max_chars.'" placeholder="'.$placeholder.'"';
+    echo ' value="'.$default_value.'" size="'.$max_chars.'" maxlength="'.$max_chars.'" placeholder="'.$placeholder.'"';
     if ($autofocus === True) {
         echo ' autofocus';
     }
@@ -28,12 +28,10 @@ function product_form_field_text($name, $text, $default_value, $max_chars, $plac
         echo 'autocomplete="on"';
     }
     echo ' />';
-    echo '</li>';
     echo "\n";
 }
 
 function product_form_field_file($name, $text, $autofocus, $required) {
-    echo '<li>';
     echo '<label for="'.$name.'">'.$text.':</label>';
     echo '<input type="file" name="'.$name.'" id="'.$name.'"';
     if ($autofocus === True) {
@@ -43,12 +41,10 @@ function product_form_field_file($name, $text, $autofocus, $required) {
         echo ' required';
     }
     echo ' />';
-    echo '</li>';
     echo "\n";
 }
 
 function product_form_field_dropdown($name, $text, $list, $autofocus, $required) {
-    echo '<li>';
     echo '<label for="'.$name.'">'.$text.':</label>';
 
     echo '<select name="'.$name.'" id="'.$name.'"';
@@ -63,12 +59,10 @@ function product_form_field_dropdown($name, $text, $list, $autofocus, $required)
         echo '<option value="'.$row['value'].'">'.$row['name'].'</option>';
     }
     echo '</select>';
-    echo '</li>';
 }
 
 /*
 function product_form_field_radio($name, $text, $max, $placeholder, $autofocus, $required, $autocomplete) {
-                    <li>
                         <label for="faction">Speler of observator?</label>
                         <ul>
                             <li>
@@ -88,7 +82,6 @@ function product_form_field_radio($name, $text, $max, $placeholder, $autofocus, 
                                 </div>
                             </li>
                         </ul>
-                    </li>
 */
 
 function categories_to_dropdown_list($db) {
@@ -103,27 +96,126 @@ function categories_to_dropdown_list($db) {
     return $list;
 }
 
+
+function category_display_edit($db, $cat) {
+    /* Begin of article */
+    echo '      <div class="section">';
+    echo '          <p>'."\n";
+
+
+    /* Draw category header */
+    /* category_display_header($cat); */
+    echo '<form action="category_edit.php" method="POST" enctype="multipart/form-data">' . "\n";
+    echo '<input type="hidden" name="id" id="id" value="'.$cat->id.'">';
+
+    echo '<h2>'; product_form_field_text('name', 'Categorie naam', $cat->name, 60, 'Categorie naam', False, True, False); echo '</h2>';
+    echo '<h3>'; product_form_field_text('description', 'Categorie omschrijving', $cat->description, 200, 'Categorie omschrijving', False, False, False);  echo '</h3>';
+    echo '<input type="submit" name="submit" value="Update">'  . "\n";
+    echo '</form>';
+
+
+
+    /* Products in category display */
+    $products = products_by_category_id($db, $cat->id);
+    if ($products === NULL or count($products) === 0) {
+        echo '<h4>Geen producten in deze categorie</h4>';
+        return;
+    }
+
+    echo "\n";
+    echo '<table>'."\n";
+
+    foreach($products as $prod) {
+        echo '<td>'."\n";
+
+        echo '<form action="product_edit.php" method="POST" enctype="multipart/form-data">' . "\n";
+        echo '<table class="article" border=1">';
+            echo '<col width="300x" />';
+            echo '<col width="450px" />';
+
+            echo '<tr>';
+                echo '<td>';
+                if (count($prod->images) > 0) { 
+
+                    /* Hardcode the first image to be displayed only */
+                    $img_html = display_image_data($prod->images[0]);
+                    echo $img_html;
+                }
+                echo '</td>';
+                echo '<td>';
+
+                echo '<form action="product_edit.php" method="POST" enctype="multipart/form-data">' . "\n";
+                echo '<div class=list>' . "\n";
+                echo '<input type="hidden" name="id" id="id" value="'.$prod->id.'">';
+
+                product_form_field_text('sku',          'SKU',          $prod->sku,             15,     'SKU nummer',               True, True, True); echo '<br>';
+                product_form_field_text('name',         'Naam',         $prod->name,            50,     'Naam van artikel',         False, True, False); echo '<br>';
+                product_form_field_text('description',  'Omschrijving', $prod->description,    180,     'Omschrijving van artikel', False, False, False); echo '<br>';
+                product_form_field_text('price',        'Prijs',        $prod->price,           13,     '0,00',                     False, True, False); echo '<br>';
+                product_form_field_text('clothing_size','Kleding maat', $prod->clothing_size,   50,     '',                         False, False, False); echo '<br>';
+                product_form_field_text('dimensions',   'HxBxD',        $prod->dimensions,      50,     '10x15x2',                  False, False, False); echo '<br>';
+                product_form_field_file('image',        'Foto',                                                                     False, False); echo '<br>';
+                $list = categories_to_dropdown_list($db);
+                product_form_field_dropdown('category', 'Category',     $list,                                  False, True); echo '<br>';
+
+                echo '<input type="submit" name="'.$prod->id.'" value="Update">'  . "\n"; echo '<br>';
+                echo '</div>' . "\n";
+                echo '</form>'  . "\n";
+
+                echo '<form action="product_del.php" method="POST" enctype="multipart/form-data">' . "\n";
+                echo '<input type="submit" name="'.$prod->id.'" value="Delete">'  . "\n"; echo '<br>';
+                echo '</form>'  . "\n";
+
+                echo '</td>';
+            echo '</tr>';
+        echo '</table>'."\n";
+        echo '</form>' . "\n";
+
+        echo '</td>'."\n";
+
+        echo '<tr>'."\n";
+    }
+    echo '</table>'."\n";
+
+    /* End of article */
+    echo '          </p>'."\n";
+    echo '<hr>'. "\n";
+    echo '      </div>' . "\n";
+
+}
+
+
 $head = new Head;
 $head->display();
 
+echo '<h2>Nieuw artikel toevoegen</h2>';
 
 echo '    <form action="product_add.php" method="POST" enctype="multipart/form-data">' . "\n";
 echo '    <div class=list>' . "\n";
 
-product_form_field_text('sku',          'SKU',          '', 10,     'SKU nummer',               True, True, True);
-product_form_field_text('name',         'Naam',         '', 100,    'Naam van artikel',         False, True, False);
-product_form_field_text('description',  'Omschrijving', '', 1024,   'Omschrijving van artikel', False, False, False);
-product_form_field_text('price',        'Prijs',        '', 13,     '0,00',                     False, True, False);
-product_form_field_text('clothing_size','Kleding maat', '', 50,     '',                         False, False, False);
-product_form_field_text('dimensions',   'HxBxD',        '', 50,     '10x15x2',                  False, False, False);
-product_form_field_file('image',        'Foto',                                                 False, True);
+echo '<li>'; product_form_field_text('sku',          'SKU',          '', 15,     'SKU nummer',               True, True, True); echo '</li>';
+echo '<li>'; product_form_field_text('name',         'Naam',         '', 50,    'Naam van artikel',         False, True, False); echo '</li>';
+echo '<li>'; product_form_field_text('description',  'Omschrijving', '', 180,   'Omschrijving van artikel', False, False, False); echo '</li>';
+echo '<li>'; product_form_field_text('price',        'Prijs',        '', 13,     '0,00',                     False, True, False); echo '</li>';
+echo '<li>'; product_form_field_text('clothing_size','Kleding maat', '', 50,     '',                         False, False, False); echo '</li>';
+echo '<li>'; product_form_field_text('dimensions',   'HxBxD',        '', 50,     '10x15x2',                  False, False, False); echo '</li>';
+echo '<li>'; product_form_field_file('image',        'Foto',                                                 False, True); echo '</li>';
 $list = categories_to_dropdown_list($db);
-product_form_field_dropdown('category', 'Category',     $list,                                  False, True);
+echo '<li>';product_form_field_dropdown('category', 'Category',     $list,                                  False, True); echo '</li>';
 
-echo '      <input type="submit" name="submit" value="Submit">'  . "\n";
+echo '      <input type="submit" name="submit" value="Toevoegen">'  . "\n";
 
 echo '    </div>' . "\n";
 echo '    </form>'  . "\n";
+
+
+echo '<hr>';
+
+
+$categories = categories_load($db);
+foreach ($categories as $cat) {
+    category_display_edit($db, $cat);
+}
 
 $tail = new Tail;
 $tail->display();
