@@ -1,8 +1,9 @@
 <?php
 
-require 'config.php';
-require 'database.php';
-require 'product.php';
+require_once 'config.php';
+require_once 'database.php';
+require_once 'product.php';
+require_once 'category.php';
 
 date_default_timezone_set('Etc/UTC');
 
@@ -21,7 +22,7 @@ if ($db && $db->handle === NULL) {
     return;
 }
 
-/* Fetch POST info and generate a Player */
+/* Fetch POST info and generate a Product */
 try {
     $product = new Product;
     $product->fillFromPost();
@@ -30,16 +31,18 @@ try {
     return;
 }
 
-/* Store player */
+/* Store product */
 if (!$product->store($db)) {
     display_failure();
     return;
 }
 
+product_to_category_add_by_sku_id($db, $_POST['sku'], $_POST['category']);
+
 
 echo '<!DOCTYPE HTML>'."\n";
 echo '<html lang="en-US"><head><meta charset="UTF-8">'."\n";
-echo '<meta http-equiv="refresh" content="1;url=/">';
+/* echo '<meta http-equiv="refresh" content="1;url=/">'; */
 echo '</head></html>';
 
 

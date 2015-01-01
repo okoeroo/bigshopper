@@ -1,6 +1,16 @@
 <?php
 
-require 'build.php';
+require_once 'build.php';
+require_once 'category.php';
+require_once 'database.php';
+
+
+/* Open DB */
+$db = db_connect();
+if ($db && $db->handle === NULL) {
+    http_response_code(500);
+    return;
+}
 
 
 function product_form_field_text($name, $text, $default_value, $max_chars, $placeholder, $autofocus, $required, $autocomplete) {
@@ -37,20 +47,26 @@ function product_form_field_file($name, $text, $autofocus, $required) {
     echo "\n";
 }
 
+function product_form_field_dropdown($name, $text, $list, $autofocus, $required) {
+    echo '<li>';
+    echo '<label for="'.$name.'">'.$text.':</label>';
 
-/*
-function product_form_field_dropdown($name, $text, $max, $placeholder, $autofocus, $required, $autocomplete) {
-                    <li>
-                        <label for="faction">Faction:</label>
-                        <select class="formelement" id="faction" name="faction">
-                            <option value="hacker">Hackers</option>
-                            <option value="infosec">Infosec professionals</option>
-                            <option value="anon">Anonymous</option>
-                            <option value="gov">Government agents</option>
-                        </select>
-                    </li>
+    echo '<select name="'.$name.'" id="'.$name.'"';
+    if ($autofocus === True) {
+        echo ' autofocus';
+    }
+    if ($required === True) {
+        echo ' required';
+    }
+    echo '>';
+    foreach ($list as $row) {
+        echo '<option value="'.$row['value'].'">'.$row['name'].'</option>';
+    }
+    echo '</select>';
+    echo '</li>';
 }
 
+/*
 function product_form_field_radio($name, $text, $max, $placeholder, $autofocus, $required, $autocomplete) {
                     <li>
                         <label for="faction">Speler of observator?</label>
@@ -75,9 +91,21 @@ function product_form_field_radio($name, $text, $max, $placeholder, $autofocus, 
                     </li>
 */
 
+function categories_to_dropdown_list($db) {
+    $categories = categories_load($db);
+    $list = array();
+
+    foreach ($categories as $cat) {
+        $row['name'] = $cat->name;
+        $row['value'] = $cat->id;
+        array_push($list, $row);
+    }
+    return $list;
+}
 
 $head = new Head;
 $head->display();
+
 
 echo '    <form action="product_add.php" method="POST" enctype="multipart/form-data">' . "\n";
 echo '    <div class=list>' . "\n";
@@ -89,6 +117,8 @@ product_form_field_text('price',        'Prijs',        '', 13,     '0,00',     
 product_form_field_text('clothing_size','Kleding maat', '', 50,     '',                         False, False, False);
 product_form_field_text('dimensions',   'HxBxD',        '', 50,     '10x15x2',                  False, False, False);
 product_form_field_file('image',        'Foto',                                                 False, True);
+$list = categories_to_dropdown_list($db);
+product_form_field_dropdown('category', 'Category',     $list,                                  False, True);
 
 echo '      <input type="submit" name="submit" value="Submit">'  . "\n";
 

@@ -76,6 +76,34 @@ function category_search_by_name($db, $name) {
     return NULL;
 }
 
+function product_to_category_add_by_sku_id($db, $prod_sku, $cat_id) {
+    $prod = product_search_by_sku($db, $prod_sku);
+    $cat  = category_search_by_id($db, $cat_id);
+
+    if ($prod === NULL or $cat === NULL) {
+        return False;
+    }
+
+    $sql = 'INSERT INTO products_categories '.
+           '            (product_id, category_id) '.
+           '     VALUES (:product_id, :category_id)';
+
+    try {
+        $sth = $db->handle->prepare($sql);
+        $sth->execute(array(
+            ':product_id'=>$prod->id,
+            ':category_id'=>$cat->id));
+
+    } catch (Exception $e) {
+        if ($db->debug === True) {
+            var_dump($e);
+        }
+        return False;
+    }
+
+    return True;
+}
+
 function product_to_category_add_by_name_name($db, $prod_name, $cat_name) {
     $prod = product_search_by_name($prod_name);
     $cat  = category_search_by_name($cat_name);
@@ -158,10 +186,10 @@ function category_display_load($db, $cat_id) {
 
         echo '<table class="article" border=1">';
             echo '<col width="300x" />';
-            echo '<col width="150px" />';
+            echo '<col width="250px" />';
 
             echo '<tr>';
-                echo '<th rowspan="4">';
+                echo '<th rowspan="5">';
                 if (count($prod->images) > 0) { 
 
                     /* Hardcode the first image to be displayed only */
@@ -190,6 +218,11 @@ function category_display_load($db, $cat_id) {
             echo '<tr>';
                 echo '<td>';
                 echo $prod->description;
+                echo '</td>';
+            echo '</tr>';
+            echo '<tr>';
+                echo '<td>';
+                echo 'Voeg toe aan winkelwagentje';
                 echo '</td>';
             echo '</tr>';
         echo '</table>';
