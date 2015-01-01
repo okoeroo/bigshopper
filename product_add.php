@@ -39,7 +39,7 @@ if (!$product->store($db)) {
 
 echo '<!DOCTYPE HTML>'."\n";
 echo '<html lang="en-US"><head><meta charset="UTF-8">'."\n";
-echo '<meta http-equiv="refresh" content="1;url=http://devel.koeroo.net/admin.php">';
+echo '<meta http-equiv="refresh" content="1;url=/">';
 echo '</head></html>';
 
 

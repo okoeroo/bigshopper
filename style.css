@@ -37,6 +37,11 @@ body {
     float:right;
 }
 
+.nav_block a {
+    text-decoration: none;
+    color:#feeaeb;
+}
+
 .nav_block {
     list-style-type: none;
     margin:auto;

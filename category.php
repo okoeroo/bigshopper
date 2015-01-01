@@ -112,6 +112,22 @@ function category_display_header($cat) {
     }
 }
 
+function display_image_data($img) {
+    $site = new Site;
+
+    $hash = hash('whirlpool', $img);
+    $img_path = dirname($_SERVER["SCRIPT_FILENAME"]).'/'.$site->image_dir.'/'.$hash;
+    /* $img_path = $site->image_dir.'/'.$hash; */
+    if (! file_exists($img_path)) {
+        $t = file_put_contents($site->image_dir.'/'.$hash, $img);
+
+    }
+
+    $s = '<img width="300px" src="'.'/'.$site->image_dir.'/'.$hash.'">';
+    return $s;
+    return $hash;
+}
+
 function category_display_load($db, $cat_id) {
     $cat = category_search_by_id($db, $cat_id);
 
@@ -130,36 +146,60 @@ function category_display_load($db, $cat_id) {
         return;
     }
 
-
-    echo '<table border=1 width="400px">';
+    echo "\n";
+    echo '<table>'."\n";
+    $cnt = 0;
     foreach($products as $prod) {
+        if ($cnt % 2 == 0 && $cnt > 0) {
+            echo '<tr>'."\n";
+        }
 
-        echo '<tr>';
-            echo '<th rowspan="4">';
-            echo 'picture';
-            echo '</th>';
+        echo '<td>'."\n";
 
-            echo '<td>';
-            echo $prod->name;
-            echo '</td>';
-        echo '</tr>';
-        echo '<tr>';
-            echo '<td>';
-            echo $prod->sku;
-            echo '</td>';
-        echo '</tr>';
-        echo '<tr>';
-            echo '<td>';
-            echo $prod->price;
-            echo '</td>';
-        echo '</tr>';
-        echo '<tr>';
-            echo '<td>';
-            echo $prod->description;
-            echo '</td>';
-        echo '</tr>';
+        echo '<table class="article" border=1">';
+            echo '<col width="300x" />';
+            echo '<col width="150px" />';
+
+            echo '<tr>';
+                echo '<th rowspan="4">';
+                if (count($prod->images) > 0) { 
+
+                    /* Hardcode the first image to be displayed only */
+                    $img_html = display_image_data($prod->images[0]);
+                    echo $img_html;
+                }
+                echo '</th>';
+
+                echo '<td>';
+                echo $prod->name;
+                echo '</td>';
+            echo '</tr>';
+            echo '<tr>';
+                echo '<td>';
+                echo "Product nr: ";
+                echo $prod->sku;
+                echo '</td>';
+            echo '</tr>';
+            echo '<tr>';
+                echo '<td>';
+                echo 'Prijs: ';
+                echo $prod->price;
+                echo ' euro';
+                echo '</td>';
+            echo '</tr>';
+            echo '<tr>';
+                echo '<td>';
+                echo $prod->description;
+                echo '</td>';
+            echo '</tr>';
+        echo '</table>';
+        echo "\n";
+
+        echo '</td>'."\n";
+
+        $cnt++;
     }
-    echo '</table>';
+    echo '</table>'."\n";
 
     /* End of article */
     echo '          </p>'."\n";
