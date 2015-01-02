@@ -210,9 +210,8 @@ function product_to_category_count_products($db, $cat_id) {
 
 function product_to_category_add_by_sku_id($db, $prod_sku, $cat_id) {
     $prod = product_search_by_sku($db, $prod_sku);
-    $cat  = category_search_by_id($db, $cat_id);
 
-    if ($prod === NULL or $cat === NULL) {
+    if ($prod === NULL) {
         return False;
     }
 
@@ -224,7 +223,7 @@ function product_to_category_add_by_sku_id($db, $prod_sku, $cat_id) {
         $sth = $db->handle->prepare($sql);
         $sth->execute(array(
             ':product_id'=>$prod->id,
-            ':category_id'=>$cat->id));
+            ':category_id'=>$cat_id));
 
     } catch (Exception $e) {
         if ($db->debug === True) {
@@ -235,6 +234,34 @@ function product_to_category_add_by_sku_id($db, $prod_sku, $cat_id) {
 
     return True;
 }
+
+function product_to_category_edit_by_sku_id($db, $prod_sku, $cat_id) {
+    $prod = product_search_by_sku($db, $prod_sku);
+
+    if ($prod === NULL) {
+        return False;
+    }
+
+    $sql = 'UPDATE products_categories '.
+           '   SET category_id = :category_id '.
+           ' WHERE product_id = :product_id';
+
+    try {
+        $sth = $db->handle->prepare($sql);
+        $sth->execute(array(
+            ':product_id'=>$prod->id,
+            ':category_id'=>$cat_id));
+
+    } catch (Exception $e) {
+        if ($db->debug === True) {
+            var_dump($e);
+        }
+        return False;
+    }
+
+    return True;
+}
+
 
 function product_to_category_add_by_name_name($db, $prod_name, $cat_name) {
     $prod = product_search_by_name($prod_name);
