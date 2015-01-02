@@ -227,6 +227,22 @@ echo '    </form>'  . "\n";
 echo '<hr>';
 
 
+echo '<h2>Nieuwe categorie toevoegen</h2>';
+
+echo '    <form action="category_add.php" method="POST" enctype="multipart/form-data">' . "\n";
+echo '    <div class=list>' . "\n";
+
+echo '<li>'; product_form_field_text('name',         'Naam',         '', 50,    'Naam van category',         False, True,  False); echo '</li>';
+echo '<li>'; product_form_field_text('description',  'Omschrijving', '', 180,   'Omschrijving van category', False, False, False); echo '</li>';
+
+echo '      <input type="submit" name="submit" value="Toevoegen">'  . "\n";
+
+echo '    </div>' . "\n";
+echo '    </form>'  . "\n";
+
+
+echo '<hr>';
+
 $categories = categories_load($db);
 foreach ($categories as $cat) {
     category_display_edit($db, $cat);

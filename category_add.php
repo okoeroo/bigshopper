@@ -21,29 +21,25 @@ if ($db && $db->handle === NULL) {
     http_response_code(500);
     return;
 }
-
+var_dump($_POST);
 /* Fetch POST info and generate a Product */
 try {
-    $product = new Product;
-    $product->fillFromPost();
+    $cat = new Category;
+    $cat->fillFromPost();
 } catch (Exception $e) {
     var_dump($e);
     return;
 }
 
 /* Store product */
-if (!$product->store($db)) {
+if (!$cat->store($db)) {
     display_failure();
     return;
 }
-
-product_to_category_add_by_sku_id($db, $_POST['sku'], $_POST['category']);
-
 
 echo '<!DOCTYPE HTML>'."\n";
 echo '<html lang="en-US"><head><meta charset="UTF-8">'."\n";
 echo '<meta http-equiv="refresh" content="1;url=/admin.php">';
 echo '</head></html>';
-
 
 ?>

@@ -32,12 +32,15 @@ try {
 }
 
 /* Store product */
-if (!$product->store($db)) {
+if (!$product->update($db)) {
     display_failure();
     return;
 }
 
-product_to_category_add_by_sku_id($db, $_POST['sku'], $_POST['category']);
+/* TODO: image update */
+
+/* Update category */
+product_to_category_edit_by_sku_id($db, $_POST['sku'], $_POST['category']);
 
 
 echo '<!DOCTYPE HTML>'."\n";

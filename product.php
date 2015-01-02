@@ -185,7 +185,46 @@ class Product {
         }
         return True;
     }
+
+    function delete($db) {
+        $sql = 'DELETE FROM products' .
+               ' WHERE id = :id';
+
+        try {
+            $sth = $db->handle->prepare($sql);
+            $sth->execute(array(
+                ':id'=>$this->id));
+
+        } catch (Exception $e) {
+            if ($db->debug === True) {
+                var_dump($e);
+            }
+            return False;
+        }
+
+        return True;
+    }
 }
+
+function product_delete_by_id($db, $prod_id) {
+    $sql = 'DELETE FROM products' .
+           ' WHERE id = :id';
+
+    try {
+        $sth = $db->handle->prepare($sql);
+        $sth->execute(array(
+            ':id'=>$prod_id));
+
+    } catch (Exception $e) {
+        if ($db->debug === True) {
+            var_dump($e);
+        }
+        return False;
+    }
+
+    return True;
+}
+
 
 function products_load($db) {
     $products = array();
