@@ -226,7 +226,7 @@ function product_to_category_count_products($cat_id) {
 function product_to_category_add_by_sku_id($prod_sku, $cat_id) {
     $db = $GLOBALS['db'];
 
-    $prod = product_search_by_sku($db, $prod_sku);
+    $prod = product_search_by_sku($prod_sku);
 
     if ($prod === NULL) {
         return False;
@@ -254,7 +254,7 @@ function product_to_category_add_by_sku_id($prod_sku, $cat_id) {
 
 function product_to_category_edit_by_sku_id($prod_sku, $cat_id) {
     $db = $GLOBALS['db'];
-    $prod = product_search_by_sku($db, $prod_sku);
+    $prod = product_search_by_sku($prod_sku);
 
     if ($prod === NULL) {
         return False;

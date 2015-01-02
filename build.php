@@ -77,9 +77,7 @@ function article_display($article) {
 }
 
 function section_display($article_id) {
-    $db = $GLOBALS['db'];
-
-    $article = article_load($db, $article_id);
+    $article = article_load($article_id);
     article_display($article);
 }
 

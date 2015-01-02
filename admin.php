@@ -5,6 +5,16 @@ require_once 'build.php';
 require_once 'category.php';
 require_once 'product.php';
 
+/* Slotje */
+if ($_SERVER["REMOTE_ADDR"] === '::ffff:195.241.201.236') {
+    echo 'Authorized';
+} else {
+    echo '<!DOCTYPE HTML>'."\n";
+    echo '<html lang="en-US"><head><meta charset="UTF-8">'."\n";
+    echo '<meta http-equiv="refresh" content="1;url=/">';
+    echo '</head></html>';
+    return;
+}
 
 /* Global initializers */
 if (!initialize()) {
@@ -134,10 +144,6 @@ function category_display_edit($cat) {
         echo '<h4>Geen producten in deze categorie</h4>';
         return;
     }
-
-    echo '<br>';
-    echo count($products);
-    echo '<br>';
 
     echo "\n";
     echo '<table>'."\n";

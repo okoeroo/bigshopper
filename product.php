@@ -21,8 +21,12 @@ class Product {
         $this->dimensions    = $row['dimensions'];
         $this->changed_on    = $row['changed_on'];
 
-        $img                 = $row['img'];
-        array_push($this->images, $img);
+        if (isset($row['img'])) {
+            $img                 = $row['img'];
+            array_push($this->images, $img);
+        } else {
+            $this->load_associated_images();
+        }
     }
 
     function fillFromPost() {
@@ -79,9 +83,27 @@ class Product {
             }
         } else {
             /* Try searching for existing pictures assosicated to this products */
-
-
+            $this->load_associated_images();
         }
+    }
+
+    function load_associated_images() {
+        $db = $GLOBALS['db'];
+
+        $sql = 'SELECT img '.
+               '  FROM product_images '.
+               ' WHERE product_id = :product_id';
+        $sth = $db->handle->prepare($sql);
+        if (! $sth->execute(array(
+                ':product_id'=>$this->id))) {
+            return False;
+        }
+        $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+        foreach($rs as $row) {
+            $img = $row['img'];
+            array_push($this->images, $img);
+        }
+        return True;
     }
 
     function store() {
@@ -400,6 +422,9 @@ function products_by_category_id($cat_id) {
     foreach($rs as $row) {
         $prod = new Product();
         $prod->fillFromRow($row);
+
+        /* Load images, if available */
+        $prod->load_associated_images();
 
         array_push($products, $prod);
     }
