@@ -44,7 +44,7 @@ function product_form_field_file($name, $text, $autofocus, $required) {
     echo "\n";
 }
 
-function product_form_field_dropdown($name, $text, $list, $autofocus, $required) {
+function product_form_field_dropdown($name, $text, $list, $selected_value, $autofocus, $required) {
     echo '<label for="'.$name.'">'.$text.':</label>';
 
     echo '<select name="'.$name.'" id="'.$name.'"';
@@ -56,7 +56,11 @@ function product_form_field_dropdown($name, $text, $list, $autofocus, $required)
     }
     echo '>';
     foreach ($list as $row) {
-        echo '<option value="'.$row['value'].'">'.$row['name'].'</option>';
+        echo '<option value="'.$row['value'].'" ';
+        if ($selected_value === $row['value']) {
+            echo 'selected';
+        }
+        echo '>'.$row['name'].'</option>';
     }
     echo '</select>';
 }
@@ -166,7 +170,7 @@ function category_display_edit($db, $cat) {
                 product_form_field_text('dimensions',   'HxBxD',        $prod->dimensions,      50,     '10x15x2',                  False, False, False); echo '<br>';
                 product_form_field_file('image',        'Foto',                                                                     False, False); echo '<br>';
                 $list = categories_to_dropdown_list($db);
-                product_form_field_dropdown('category', 'Category',     $list,                                  False, True); echo '<br>';
+                product_form_field_dropdown('category', 'Category',     $list,                  $cat->id,                           False, True); echo '<br>';
 
                 echo '<input type="submit" name="'.$prod->id.'" value="Update">'  . "\n"; echo '<br>';
                 echo '</div>' . "\n";
@@ -212,7 +216,7 @@ echo '<li>'; product_form_field_text('clothing_size','Kleding maat', '', 50,    
 echo '<li>'; product_form_field_text('dimensions',   'HxBxD',        '', 50,     '10x15x2',                  False, False, False); echo '</li>';
 echo '<li>'; product_form_field_file('image',        'Foto',                                                 False, True); echo '</li>';
 $list = categories_to_dropdown_list($db);
-echo '<li>';product_form_field_dropdown('category', 'Category',     $list,                                  False, True); echo '</li>';
+echo '<li>';product_form_field_dropdown('category', 'Category',     $list,       NULL,                      False, True); echo '</li>';
 
 echo '      <input type="submit" name="submit" value="Toevoegen">'  . "\n";
 
