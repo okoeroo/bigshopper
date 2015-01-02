@@ -1,7 +1,7 @@
 <?php
 
+require_once 'globals.php';
 require_once 'config.php';
-require_once 'database.php';
 require_once 'product.php';
 require_once 'category.php';
 
@@ -23,13 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     return;
 }
 
-/* Open DB */
-$db = db_connect();
-if ($db && $db->handle === NULL) {
+/* Global initializers */
+if (!initialize()) {
     http_response_code(500);
-    return_to_sender();
     return;
 }
+
 
 /* Fetch POST info and generate a Category */
 if (! isset($_POST['id'])) {
@@ -39,7 +38,7 @@ if (! isset($_POST['id'])) {
     return;
 }
 
-if (! product_delete_by_id($db, $_POST['id'])) {
+if (! product_delete_by_id($_POST['id'])) {
     http_response_code(500);
     var_dump($_POST);
     display_failure();

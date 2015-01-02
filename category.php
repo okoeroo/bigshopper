@@ -32,7 +32,9 @@ class Category {
         }
     }
 
-    function store($db) {
+    function store() {
+        $db = $GLOBALS['db'];
+
         $sql = 'INSERT INTO categories' .
                '            (name, description)'.
                '     VALUES (:name, :description)';
@@ -53,7 +55,9 @@ class Category {
         return True;
     }
 
-    function update($db) {
+    function update() {
+        $db = $GLOBALS['db'];
+
         $sql = 'UPDATE categories' .
                '   SET name = :name, description = :description'.
                ' WHERE id = :id';
@@ -75,7 +79,9 @@ class Category {
         return True;
     }
 
-    function delete($db) {
+    function delete() {
+        $db = $GLOBALS['db'];
+
         /* Check if category is empty */
         if (product_to_category_count_products($db, $this->id) > 0) {
             return False;
@@ -101,7 +107,9 @@ class Category {
     }
 }
 
-function category_delete_by_id($db, $cat_id) {
+function category_delete_by_id($cat_id) {
+    $db = $GLOBALS['db'];
+
     /* Check if category is empty */
     if (product_to_category_count_products($db, $cat_id) > 0) {
         return False;
@@ -127,7 +135,8 @@ function category_delete_by_id($db, $cat_id) {
 }
 
 
-function categories_load($db) {
+function categories_load() {
+    $db = $GLOBALS['db'];
     $categories = array();
 
     $sql = 'SELECT id, name, description, changed_on '.
@@ -148,7 +157,9 @@ function categories_load($db) {
     return $categories;
 }
 
-function category_search_by_id($db, $id) {
+function category_search_by_id($id) {
+    $db = $GLOBALS['db'];
+
     $sql = 'SELECT id, name, description, changed_on '.
            '  FROM categories '.
            ' WHERE categories.id = :id';
@@ -168,7 +179,9 @@ function category_search_by_id($db, $id) {
     return NULL;
 }
 
-function category_search_by_name($db, $name) {
+function category_search_by_name($name) {
+    $db = $GLOBALS['db'];
+
     $sql = 'SELECT id, name, description, changed_on '.
            '  FROM categories '.
            ' WHERE categories.name = :name';
@@ -189,7 +202,9 @@ function category_search_by_name($db, $name) {
 }
 
 
-function product_to_category_count_products($db, $cat_id) {
+function product_to_category_count_products($cat_id) {
+    $db = $GLOBALS['db'];
+
     $sql = 'SELECT COUNT(product_id) as count '.
            '  FROM products_categories'.
            ' WHERE category_id = :category_id';
@@ -208,7 +223,9 @@ function product_to_category_count_products($db, $cat_id) {
     return -1;
 }
 
-function product_to_category_add_by_sku_id($db, $prod_sku, $cat_id) {
+function product_to_category_add_by_sku_id($prod_sku, $cat_id) {
+    $db = $GLOBALS['db'];
+
     $prod = product_search_by_sku($db, $prod_sku);
 
     if ($prod === NULL) {
@@ -235,7 +252,8 @@ function product_to_category_add_by_sku_id($db, $prod_sku, $cat_id) {
     return True;
 }
 
-function product_to_category_edit_by_sku_id($db, $prod_sku, $cat_id) {
+function product_to_category_edit_by_sku_id($prod_sku, $cat_id) {
+    $db = $GLOBALS['db'];
     $prod = product_search_by_sku($db, $prod_sku);
 
     if ($prod === NULL) {
@@ -263,7 +281,8 @@ function product_to_category_edit_by_sku_id($db, $prod_sku, $cat_id) {
 }
 
 
-function product_to_category_add_by_name_name($db, $prod_name, $cat_name) {
+function product_to_category_add_by_name_name($prod_name, $cat_name) {
+    $db = $GLOBALS['db'];
     $prod = product_search_by_name($prod_name);
     $cat  = category_search_by_name($cat_name);
 
@@ -315,8 +334,9 @@ function display_image_data($img) {
     return $hash;
 }
 
-function category_display_load($db, $cat_id) {
-    $cat = category_search_by_id($db, $cat_id);
+function category_display_load($cat_id) {
+    $db = $GLOBALS['db'];
+    $cat = category_search_by_id($cat_id);
 
     /* Begin of article */
     echo '      <div class="section">';
@@ -327,7 +347,7 @@ function category_display_load($db, $cat_id) {
     category_display_header($cat);
 
     /* Products in category display */
-    $products = products_by_category_id($db, $cat_id);
+    $products = products_by_category_id($cat_id);
     if ($products === NULL or count($products) === 0) {
         echo '<h4>Geen producten in deze categorie</h4>';
         return;

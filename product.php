@@ -77,10 +77,15 @@ class Product {
                 $image = file_get_contents($_FILES['image']['tmp_name']);
                 array_push($this->images, $image);
             }
+        } else {
+            /* Try searching for existing pictures assosicated to this products */
+
+
         }
     }
 
-    function store($db) {
+    function store() {
+        $db = $GLOBALS['db'];
         $sql = 'INSERT INTO products' .
                '            (sku, name, description, price, '.
                '             clothing_size, dimensions) '.
@@ -137,7 +142,9 @@ class Product {
         return True;
     }
 
-    function update($db) {
+    function update() {
+        $db = $GLOBALS['db'];
+
         $sql = 'UPDATE products' .
                '   SET sku = :sku,'.
                '       name = :name,'.
@@ -157,6 +164,21 @@ class Product {
                     ':price'=>$this->price,
                     ':clothing_size'=>$this->clothing_size,
                     ':dimensions'=>$this->dimensions));
+        } catch (Exception $e) {
+            if ($db->debug === True) {
+                var_dump($e);
+            }
+            return False;
+        }
+
+        /* TODO Hack: remove all product_id images first, make it the first
+         * image always */
+        $sql = 'DELETE FROM product_images' .
+               '      WHERE product_id = :product_id';
+        try {
+            $sth = $db->handle->prepare($sql);
+            $sth->execute(array(
+                ':product_id'=>$this->id));
         } catch (Exception $e) {
             if ($db->debug === True) {
                 var_dump($e);
@@ -186,10 +208,39 @@ class Product {
         return True;
     }
 
-    function delete($db) {
-        $sql = 'DELETE FROM products' .
-               ' WHERE id = :id';
+    function delete() {
+        $db = $GLOBALS['db'];
 
+        $sql = 'DELETE FROM products' .
+               '      WHERE id = :id';
+        try {
+            $sth = $db->handle->prepare($sql);
+            $sth->execute(array(
+                ':id'=>$this->id));
+
+        } catch (Exception $e) {
+            if ($db->debug === True) {
+                var_dump($e);
+            }
+            return False;
+        }
+
+        $sql = 'DELETE FROM product_images' .
+               '      WHERE product_id = :id';
+        try {
+            $sth = $db->handle->prepare($sql);
+            $sth->execute(array(
+                ':id'=>$this->id));
+
+        } catch (Exception $e) {
+            if ($db->debug === True) {
+                var_dump($e);
+            }
+            return False;
+        }
+
+        $sql = 'DELETE FROM products_categories' .
+               '      WHERE product_id = :id';
         try {
             $sth = $db->handle->prepare($sql);
             $sth->execute(array(
@@ -206,7 +257,9 @@ class Product {
     }
 }
 
-function product_delete_by_id($db, $prod_id) {
+function product_delete_by_id($prod_id) {
+    $db = $GLOBALS['db'];
+
     $sql = 'DELETE FROM products' .
            ' WHERE id = :id';
 
@@ -226,7 +279,8 @@ function product_delete_by_id($db, $prod_id) {
 }
 
 
-function products_load($db) {
+function products_load() {
+    $db = $GLOBALS['db'];
     $products = array();
 
     $sql = 'SELECT products.id, sku, name, description, '.
@@ -250,7 +304,9 @@ function products_load($db) {
     return $products;
 }
 
-function product_search_by_id($db, $id) {
+function product_search_by_id($id) {
+    $db = $GLOBALS['db'];
+
     $sql = 'SELECT products.id, sku, name, description, '.
            '       price, clothing_size, dimensions, '.
            '       products.changed_on, img '.
@@ -273,7 +329,9 @@ function product_search_by_id($db, $id) {
     return NULL;
 }
 
-function product_search_by_sku($db, $sku) {
+function product_search_by_sku($sku) {
+    $db = $GLOBALS['db'];
+
     $sql = 'SELECT products.id, sku, name, description, '.
            '       price, clothing_size, dimensions, '.
            '       products.changed_on, img '.
@@ -296,7 +354,9 @@ function product_search_by_sku($db, $sku) {
     return NULL;
 }
 
-function product_search_by_name($db, $name) {
+function product_search_by_name($name) {
+    $db = $GLOBALS['db'];
+
     $sql = 'SELECT products.id, sku, name, description, '.
            '       price, clothing_size, dimensions, '.
            '       products.changed_on, img '.
@@ -319,12 +379,39 @@ function product_search_by_name($db, $name) {
     return NULL;
 }
 
-function products_by_category_id($db, $cat_id) {
+function products_by_category_id($cat_id) {
+    $db = $GLOBALS['db'];
     $products = array();
 
-    $sql = 'SELECT products.id, sku, name, description, '.
-           '       price, clothing_size, dimensions, '.
-           '       products.changed_on, img '.
+    $sql = 'SELECT products.id as id, products.name as name, products.description as description, '.
+           '       products.price as price, products.clothing_size as clothing_size, '.
+           '       products.dimensions as dimensions, products.sku as sku, '.
+           '       products.changed_on as changed_on '.
+           '  FROM products, products_categories '.
+           ' WHERE products_categories.product_id = products.id '.
+           '   AND products_categories.category_id = :category_id';
+
+    $sth = $db->handle->prepare($sql);
+    if (! $sth->execute(array(
+            ':category_id'=>$cat_id))) {
+        return NULL;
+    }
+    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    foreach($rs as $row) {
+        $prod = new Product();
+        $prod->fillFromRow($row);
+
+        array_push($products, $prod);
+    }
+
+    return $products;
+
+
+
+
+    $sql = 'SELECT products.id, products.sku, products.name, products.description, '.
+           '       products.price, products.clothing_size, products.dimensions, '.
+           '       products.changed_on, product_images.img '.
            '  FROM products, product_images, products_categories'.
            ' WHERE product_images.product_id = products.id'.
            '   AND products_categories.product_id = products.id'.
@@ -348,6 +435,9 @@ function products_by_category_id($db, $cat_id) {
 
 
 function sql_to_html_table($dbh, $sql) {
+    $db = $GLOBALS['db'];
+    $dbh = $db->handle;
+
     $sth = $dbh->prepare($sql);
     if (! $sth->execute()) {
         return NULL;

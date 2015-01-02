@@ -1,7 +1,7 @@
 <?php
 
+require_once 'globals.php';
 require_once 'config.php';
-require_once 'database.php';
 require_once 'build.php';
 require_once 'product.php';
 require_once 'navigation.php';
@@ -18,22 +18,20 @@ function show_hardcoded_frontpage($db) {
     $products = products_load($db);
 }
 
-
-/* Open DB */
-$db = db_connect();
-if ($db && $db->handle === NULL) {
+/* Global initializers */
+if (!initialize()) {
     http_response_code(500);
     return;
 }
 
 /* Session management */
-session_mngt($db);
+session_mngt();
 
 $head = new Head;
 $head->display();
 
 /* Navigation bar */
-navigation_display(navigation_load($db));
+navigation_display(navigation_load());
 
 
 /* Based on the query string, load various content */
@@ -51,10 +49,10 @@ if (count($query) === 1 && strlen($query[0]) === 0) {
         /* Show an entire category based on the query string data */
         if ($key == "category") {
             /* Load an entire category display here */
-            category_display_load($db, $value);
+            category_display_load($value);
         } else {
             /* On error / experimentation, just show the front page */
-            show_hardcoded_frontpage($db);
+            show_hardcoded_frontpage();
         }
     }
 }

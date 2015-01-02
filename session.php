@@ -39,7 +39,9 @@ function secure_random_sha256() {
                 False);
 }
 
-function session_search_by_token($db, $token) {
+function session_search_by_token($token) {
+    $db = $GLOBALS['db'];
+
     $sql = 'SELECT id, token, ' .
            '       valid_for_seconds, ' .
            '       created_on_unix ' .
@@ -61,7 +63,9 @@ function session_search_by_token($db, $token) {
     return NULL;
 }
 
-function session_insert_token($db, $token, $valid_for_seconds) {
+function session_insert_token($token, $valid_for_seconds) {
+    $db = $GLOBALS['db'];
+
     $sql = 'INSERT INTO sessions' .
            '            (token, valid_for_seconds, created_on_unix) '.
            '     VALUES (:token, :valid_for_seconds, :created_on_unix)';
@@ -82,7 +86,9 @@ function session_insert_token($db, $token, $valid_for_seconds) {
     return True;
 }
 
-function session_update_token($db, $token, $valid_for_seconds) {
+function session_update_token($token, $valid_for_seconds) {
+    $db = $GLOBALS['db'];
+
     $sql = 'UPDATE sessions '.
            '   SET valid_for_seconds = :valid_for_seconds, '.
            '       created_on_unix = :created_on_unix '.
@@ -104,7 +110,8 @@ function session_update_token($db, $token, $valid_for_seconds) {
     return True;
 }
 
-function session_cookie_new($db) {
+function session_cookie_new() {
+    $db = $GLOBALS['db'];
     $site = new Site;
 
     $sessiontoken = secure_random_sha256();
@@ -118,14 +125,16 @@ function session_cookie_new($db) {
               $site->cookie_scope,
               TRUE);
 
-    session_insert_token($db, $sessiontoken, $site->cookie_seconds);
+    session_insert_token($sessiontoken, $site->cookie_seconds);
     return;
 }
 
 
-function session_is_cookie_valid($db, $cookie) {
+function session_is_cookie_valid($cookie) {
+    $db = $GLOBALS['db'];
+
     /* Fetch session data */
-    $session = session_search_by_token($db, $cookie);
+    $session = session_search_by_token($cookie);
     if ($session === NULL) {
         return False;
     } else {
@@ -138,7 +147,8 @@ function session_is_cookie_valid($db, $cookie) {
     return True;
 }
 
-function session_mngt($db) {
+function session_mngt() {
+    $db = $GLOBALS['db'];
     $site = new Site;
 
     /* Is cookie set and if set a candidate session cookie?
@@ -147,21 +157,20 @@ function session_mngt($db) {
         strlen($_COOKIE[$site->cookie_name]) == 64) {
 
         /* Is the session cookie valid */
-        if (session_is_cookie_valid($db,
-                        $_COOKIE[$site->cookie_name])) {
+        if (session_is_cookie_valid($_COOKIE[$site->cookie_name])) {
 
             /* Update the cookie lifetime */
-            session_update_token($db, $_COOKIE[$site->cookie_name], $site->cookie_seconds);
+            session_update_token($_COOKIE[$site->cookie_name], $site->cookie_seconds);
 
         } else {
             /* Session went bad, create new session.
              * Note: All passed logon cookies are mute */
-            session_cookie_new($db);
+            session_cookie_new();
             return;
         }
     } else {
         /* New session to be created */
-        session_cookie_new($db);
+        session_cookie_new();
         return;
     }
 

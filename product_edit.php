@@ -1,7 +1,7 @@
 <?php
 
+require_once 'globals.php';
 require_once 'config.php';
-require_once 'database.php';
 require_once 'product.php';
 require_once 'category.php';
 
@@ -15,9 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     return;
 }
 
-/* Open DB */
-$db = db_connect();
-if ($db && $db->handle === NULL) {
+/* Global initializers */
+if (!initialize()) {
     http_response_code(500);
     return;
 }
@@ -32,7 +31,7 @@ try {
 }
 
 /* Store product */
-if (!$product->update($db)) {
+if (!$product->update()) {
     display_failure();
     return;
 }
@@ -40,7 +39,7 @@ if (!$product->update($db)) {
 /* TODO: image update */
 
 /* Update category */
-product_to_category_edit_by_sku_id($db, $_POST['sku'], $_POST['category']);
+product_to_category_edit_by_sku_id($_POST['sku'], $_POST['category']);
 
 
 echo '<!DOCTYPE HTML>'."\n";

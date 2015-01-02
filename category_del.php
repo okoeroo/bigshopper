@@ -1,5 +1,6 @@
 <?php
 
+require_once 'globals.php';
 require_once 'config.php';
 require_once 'database.php';
 require_once 'product.php';
@@ -23,11 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     return;
 }
 
-/* Open DB */
-$db = db_connect();
-if ($db && $db->handle === NULL) {
+/* Global initializers */
+if (!initialize()) {
     http_response_code(500);
-    return_to_sender();
     return;
 }
 

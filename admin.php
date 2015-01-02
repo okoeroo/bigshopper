@@ -1,14 +1,13 @@
 <?php
 
+require_once 'globals.php';
 require_once 'build.php';
-require_once 'database.php';
 require_once 'category.php';
 require_once 'product.php';
 
 
-/* Open DB */
-$db = db_connect();
-if ($db && $db->handle === NULL) {
+/* Global initializers */
+if (!initialize()) {
     http_response_code(500);
     return;
 }
@@ -88,8 +87,8 @@ function product_form_field_radio($name, $text, $max, $placeholder, $autofocus, 
                         </ul>
 */
 
-function categories_to_dropdown_list($db) {
-    $categories = categories_load($db);
+function categories_to_dropdown_list() {
+    $categories = categories_load();
     $list = array();
 
     foreach ($categories as $cat) {
@@ -101,7 +100,7 @@ function categories_to_dropdown_list($db) {
 }
 
 
-function category_display_edit($db, $cat) {
+function category_display_edit($cat) {
     /* Begin of article */
     echo '      <div class="section">';
     echo '          <p>'."\n";
@@ -118,7 +117,7 @@ function category_display_edit($db, $cat) {
     echo '</form>';
 
     /* Don't offer delete button */
-    if (product_to_category_count_products($db, $cat->id) > 0) {
+    if (product_to_category_count_products($cat->id) > 0) {
         echo '<h5><i>Verwijder blokkade: Categorie is nog niet leeg</i></h5>';
     } else {
         echo '<form action="category_del.php" method="POST" enctype="multipart/form-data">' . "\n";
@@ -130,11 +129,15 @@ function category_display_edit($db, $cat) {
 
 
     /* Products in category display */
-    $products = products_by_category_id($db, $cat->id);
+    $products = products_by_category_id($cat->id);
     if ($products === NULL or count($products) === 0) {
         echo '<h4>Geen producten in deze categorie</h4>';
         return;
     }
+
+    echo '<br>';
+    echo count($products);
+    echo '<br>';
 
     echo "\n";
     echo '<table>'."\n";
@@ -169,13 +172,14 @@ function category_display_edit($db, $cat) {
                 product_form_field_text('clothing_size','Kleding maat', $prod->clothing_size,   50,     '',                         False, False, False); echo '<br>';
                 product_form_field_text('dimensions',   'HxBxD',        $prod->dimensions,      50,     '10x15x2',                  False, False, False); echo '<br>';
                 product_form_field_file('image',        'Foto',                                                                     False, False); echo '<br>';
-                $list = categories_to_dropdown_list($db);
+                $list = categories_to_dropdown_list();
                 product_form_field_dropdown('category', 'Category',     $list,                  $cat->id,                           False, True); echo '<br>';
 
+                echo '<br>';
                 echo '<input type="submit" name="'.$prod->id.'" value="Update">'  . "\n"; echo '<br>';
                 echo '</div>' . "\n";
                 echo '</form>'  . "\n";
-
+                echo '<br>';
                 echo '<form action="product_del.php" method="POST" enctype="multipart/form-data">' . "\n";
                 echo '<input type="hidden" name="id" id="id" value="'.$prod->id.'">';
                 echo '<input type="submit" name="'.$prod->id.'" value="Delete">'  . "\n"; echo '<br>';
@@ -215,7 +219,7 @@ echo '<li>'; product_form_field_text('price',        'Prijs',        '', 13,    
 echo '<li>'; product_form_field_text('clothing_size','Kleding maat', '', 50,     '',                         False, False, False); echo '</li>';
 echo '<li>'; product_form_field_text('dimensions',   'HxBxD',        '', 50,     '10x15x2',                  False, False, False); echo '</li>';
 echo '<li>'; product_form_field_file('image',        'Foto',                                                 False, True); echo '</li>';
-$list = categories_to_dropdown_list($db);
+$list = categories_to_dropdown_list();
 echo '<li>';product_form_field_dropdown('category', 'Category',     $list,       NULL,                      False, True); echo '</li>';
 
 echo '      <input type="submit" name="submit" value="Toevoegen">'  . "\n";
@@ -243,9 +247,9 @@ echo '    </form>'  . "\n";
 
 echo '<hr>';
 
-$categories = categories_load($db);
+$categories = categories_load();
 foreach ($categories as $cat) {
-    category_display_edit($db, $cat);
+    category_display_edit($cat);
 }
 
 $tail = new Tail;

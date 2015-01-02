@@ -2,8 +2,8 @@
 
 require 'category.php';
 
-function navigation_load($db) {
-    $categories = categories_load($db);
+function navigation_load() {
+    $categories = categories_load();
     return $categories;
 }
 

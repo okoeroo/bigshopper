@@ -76,7 +76,9 @@ function article_display($article) {
         echo '      </div>' . "\n";
 }
 
-function section_display($db, $article_id) {
+function section_display($article_id) {
+    $db = $GLOBALS['db'];
+
     $article = article_load($db, $article_id);
     article_display($article);
 }

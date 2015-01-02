@@ -12,7 +12,9 @@ class Article {
     }
 }
 
-function article_load($db, $id) {
+function article_load($id) {
+    $db = $GLOBALS['db'];
+
     $sql = 'SELECT id, subject, body'.
            '  FROM articles'.
            ' WHERE id = :id';
