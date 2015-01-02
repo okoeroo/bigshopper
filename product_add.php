@@ -42,7 +42,7 @@ product_to_category_add_by_sku_id($db, $_POST['sku'], $_POST['category']);
 
 echo '<!DOCTYPE HTML>'."\n";
 echo '<html lang="en-US"><head><meta charset="UTF-8">'."\n";
-/* echo '<meta http-equiv="refresh" content="1;url=/admin.php">'; */
+echo '<meta http-equiv="refresh" content="1;url=/admin.php">';
 echo '</head></html>';
 
 

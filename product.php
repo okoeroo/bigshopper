@@ -64,14 +64,19 @@ class Product {
             }
         }
 
-        $this->images = array();
-        $file = $_FILES['image']['tmp_name'];
-        $image_check = getimagesize($_FILES['image']['tmp_name']);
-        if($image_check==false) {
-            echo 'Not a Valid Image';
-        } else {
-            $image = file_get_contents($_FILES['image']['tmp_name']);
-            array_push($this->images, $image);
+        if (isset($_FILES['image'])
+                && isset($_FILES['image']['tmp_name'])
+                && $_FILES['image']['size'] > 0) {
+
+            $this->images = array();
+            $file = $_FILES['image']['tmp_name'];
+            $image_check = getimagesize($_FILES['image']['tmp_name']);
+            if($image_check==false) {
+                echo 'Not a Valid Image';
+            } else {
+                $image = file_get_contents($_FILES['image']['tmp_name']);
+                array_push($this->images, $image);
+            }
         }
     }
 
@@ -129,6 +134,55 @@ class Product {
 
         /* Commit */
         $db->handle->commit();
+        return True;
+    }
+
+    function update($db) {
+        $sql = 'UPDATE products' .
+               '   SET sku = :sku,'.
+               '       name = :name,'.
+               '       description = :description,'.
+               '       price = :price,'.
+               '       clothing_size = :clothing_size,'.
+               '       dimensions = :dimensions '.
+               ' WHERE id = :id';
+
+        try {
+            $sth = $db->handle->prepare($sql);
+            $sth->execute(array(
+                    ':id'=>$this->id,
+                    ':sku'=>$this->sku,
+                    ':name'=>$this->name,
+                    ':description'=>$this->description,
+                    ':price'=>$this->price,
+                    ':clothing_size'=>$this->clothing_size,
+                    ':dimensions'=>$this->dimensions));
+        } catch (Exception $e) {
+            if ($db->debug === True) {
+                var_dump($e);
+            }
+            return False;
+        }
+
+        /* Store images */
+        foreach ($this->images as $value) {
+            $sql = 'INSERT INTO product_images' .
+                   '            (product_id, img) '.
+                   '     VALUES (:product_id, :img)';
+
+            try {
+                $sth = $db->handle->prepare($sql);
+                $sth->execute(array(
+                    ':product_id'=>$this->id,
+                    ':img'=>$value));
+
+            } catch (Exception $e) {
+                if ($db->debug === True) {
+                    var_dump($e);
+                }
+                return False;
+            }
+        }
         return True;
     }
 }
