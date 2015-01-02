@@ -113,6 +113,16 @@ function category_display_edit($db, $cat) {
     echo '<input type="submit" name="submit" value="Update">'  . "\n";
     echo '</form>';
 
+    /* Don't offer delete button */
+    if (product_to_category_count_products($db, $cat->id) > 0) {
+        echo '<h5><i>Verwijder blokkade: Categorie is nog niet leeg</i></h5>';
+    } else {
+        echo '<form action="category_del.php" method="POST" enctype="multipart/form-data">' . "\n";
+        echo '<input type="hidden" name="id" id="id" value="'.$cat->id.'">';
+        echo '<input type="submit" name="'.$cat->id.'" value="Delete">'  . "\n"; echo '<br>';
+        echo '</form>'  . "\n";
+    }
+
 
 
     /* Products in category display */
@@ -163,6 +173,7 @@ function category_display_edit($db, $cat) {
                 echo '</form>'  . "\n";
 
                 echo '<form action="product_del.php" method="POST" enctype="multipart/form-data">' . "\n";
+                echo '<input type="hidden" name="id" id="id" value="'.$prod->id.'">';
                 echo '<input type="submit" name="'.$prod->id.'" value="Delete">'  . "\n"; echo '<br>';
                 echo '</form>'  . "\n";
 

@@ -74,6 +74,56 @@ class Category {
 
         return True;
     }
+
+    function delete($db) {
+        /* Check if category is empty */
+        if (product_to_category_count_products($db, $this->id) > 0) {
+            return False;
+        }
+
+        /* Test concluded safe to remove */
+        $sql = 'DELETE FROM categories' .
+               ' WHERE id = :id';
+
+        try {
+            $sth = $db->handle->prepare($sql);
+            $sth->execute(array(
+                ':id'=>$this->id));
+
+        } catch (Exception $e) {
+            if ($db->debug === True) {
+                var_dump($e);
+            }
+            return False;
+        }
+
+        return True;
+    }
+}
+
+function category_delete_by_id($db, $cat_id) {
+    /* Check if category is empty */
+    if (product_to_category_count_products($db, $cat_id) > 0) {
+        return False;
+    }
+
+    /* Test concluded safe to remove */
+    $sql = 'DELETE FROM categories' .
+           ' WHERE id = :id';
+
+    try {
+        $sth = $db->handle->prepare($sql);
+        $sth->execute(array(
+            ':id'=>$cat_id));
+
+    } catch (Exception $e) {
+        if ($db->debug === True) {
+            var_dump($e);
+        }
+        return False;
+    }
+
+    return True;
 }
 
 
@@ -136,6 +186,26 @@ function category_search_by_name($db, $name) {
         return $cat;
     }
     return NULL;
+}
+
+
+function product_to_category_count_products($db, $cat_id) {
+    $sql = 'SELECT COUNT(product_id) as count '.
+           '  FROM products_categories'.
+           ' WHERE category_id = :category_id';
+
+    $sth = $db->handle->prepare($sql);
+    if (! $sth->execute(array(
+        ':category_id'=>$cat_id))) {
+        return -1;
+    }
+    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+
+    foreach($rs as $row) {
+        $cnt = intval($row['count']);
+        return $cnt;
+    }
+    return -1;
 }
 
 function product_to_category_add_by_sku_id($db, $prod_sku, $cat_id) {
