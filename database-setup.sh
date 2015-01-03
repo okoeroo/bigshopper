@@ -76,6 +76,16 @@ CREATE TABLE sessions (
         valid_for_seconds   INT NOT NULL,
         created_on_unix     INT NOT NULL
     );
+
+CREATE TABLE shoppingcart (
+        id              INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        session_id      INT NOT NULL,
+        product_id      INT NOT NULL,
+        count           INT NOT NULL,
+        changed_on      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            ON UPDATE CURRENT_TIMESTAMP
+    );
+
 EOF
 
 mysql -uroot -p"${ROOT_PASS}" < ${TMPFILE}

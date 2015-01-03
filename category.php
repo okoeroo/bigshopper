@@ -318,6 +318,7 @@ function category_display_header($cat) {
     }
 }
 
+/* Deprecated, only in admin.php */
 function display_image_data($img) {
     $site = new Site;
 
@@ -331,7 +332,21 @@ function display_image_data($img) {
 
     $s = '<img width="300px" src="'.'/'.$site->image_dir.'/'.$hash.'">';
     return $s;
-    return $hash;
+}
+
+function product_image_to_url($img) {
+    $site = new Site;
+
+    $hash = hash('whirlpool', $img);
+    $img_path = dirname($_SERVER["SCRIPT_FILENAME"]).'/'.$site->image_dir.'/'.$hash;
+    if (! file_exists($img_path)) {
+        $t = file_put_contents($site->image_dir.'/'.$hash, $img);
+    }
+
+    /* Return url, relative to main URL, in the images directory and the hash
+     * of the image (which is uniquely stored. */
+    $s = '/'.$site->image_dir.'/'.$hash;
+    return $s;
 }
 
 function category_display_load($cat_id) {
@@ -354,7 +369,7 @@ function category_display_load($cat_id) {
     }
 
     echo "\n";
-    echo '<table>'."\n";
+    echo '<table class="product_list">'."\n";
     $cnt = 0;
     foreach($products as $prod) {
         if ($cnt % 2 == 0 && $cnt > 0) {
@@ -363,7 +378,7 @@ function category_display_load($cat_id) {
 
         echo '<td>'."\n";
 
-        echo '<table class="article" border=1">';
+        echo '<table class="product">';
             echo '<col width="300x" />';
             echo '<col width="250px" />';
 
@@ -372,11 +387,36 @@ function category_display_load($cat_id) {
                 if (count($prod->images) > 0) { 
 
                     /* Hardcode the first image to be displayed only */
-                    $img_html = display_image_data($prod->images[0]);
-                    echo $img_html;
+                    $img_url = product_image_to_url($prod->images[0]);
+                    /* echo '<img width="300px" src="'. $img_url .'">'; */
+                    echo '<img class="product_img" src="'. $img_url .'">';
+
                 }
                 echo '</th>';
 
+                echo '<td>';
+                    echo '<ul class="product_summary">';
+                        echo '<li>';
+                        echo $prod->name;
+                        echo '</li>';
+                        echo '<li>';
+                        echo $prod->sku;
+                        echo '</li>';
+                        echo '<li>';
+                        echo $prod->price;
+                        echo '</li>';
+                        echo '<li>';
+                        echo $prod->clothing_size;
+                        echo '</li>';
+                        echo '<li>';
+                        echo $prod->dimensions;
+                        echo '</li>';
+                        echo '<li>';
+                        echo $prod->description;
+                        echo '</li>';
+                    echo '</ul>';
+                echo '</td>';
+/*
                 echo '<td>';
                 echo $prod->name;
                 echo '</td>';
@@ -404,6 +444,7 @@ function category_display_load($cat_id) {
                 echo 'Voeg toe aan winkelwagentje';
                 echo '</td>';
             echo '</tr>';
+*/
         echo '</table>'."\n";
         echo '</form>' . "\n";
 

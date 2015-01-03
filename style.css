@@ -30,8 +30,6 @@ body {
 }
 
 .nav {
-    background-color:#de5873;
-    color:#feeaeb;
     /* height:300px; */
     width:200px;
     float:right;
@@ -39,7 +37,7 @@ body {
 
 .nav_block a {
     text-decoration: none;
-    color:#feeaeb;
+    /* color:#feeaeb; */
 }
 
 .nav_block {
@@ -48,6 +46,9 @@ body {
 }
 
 .nav_elem {
+    background-color:#de5873;
+    color:#feeaeb;
+
     position: relative;
     list-style-type: none;
     left:-40px;
@@ -64,12 +65,96 @@ body {
 .nav_elem:hover { 
     background-color:#feeaeb;
     color:#de5873;
+    /* font-weight: bold; */
+}
+
+.nav_elem_inverted {
+    background-color:#feeaeb;
+    color:#de5873;
+
+    position: relative;
+    list-style-type: none;
+    left:-40px;
+    top:0px;
+    line-height:30px;
+    font-size: 20px;
+    text-align:center;
+    width:200px;
+
+    margin-right: 0;
+    text-wrap: normal;
+}
+
+.nav_elem_inverted:hover { 
+    background-color:#de5873;
+    color:#feeaeb;
+    font-weight: bold;
+}
+
+.nav_elem_spacer {
+    /* background-color:#feeaeb; */
+    background-color:#FFFEE0;
+
+    position: relative;
+    list-style-type: none;
+    left:-40px;
+    top:0px;
+    line-height:5px;
+    font-size: 20px;
+    text-align:center;
+    width:200px;
+
+    margin-right: 0;
+    text-wrap: normal;
 }
 
 .section {
     width:75%;
     float:left;
     padding:30vz; 
+}
+
+.product_list td {
+    /* background-color:#de5873; */
+    vertical-align: top;
+    border: 1px solid #de5873;
+    border: none;
+}
+.product_list tr {
+    /* background-color:#de5873; */
+    vertical-align: top;
+    border: none;
+}
+
+.product {
+    border-collapse: collapse;
+    height: 50px;
+    border: none;
+    width:32vw;
+}
+
+.product th {
+    height: 50px;
+    /* background-color:#de5873; */
+    border: none;
+    width: 300px;
+}
+
+.product_img {
+    /* height: 50px; */
+    width: 20vw;
+}
+
+.product td {
+    /* background-color:#de5873; */
+    vertical-align: top;
+    border: none;
+}
+
+.product_summary {
+    list-style-type: none;
+    padding: 0px;
+    margin: 5px;
 }
 
 .footer {
