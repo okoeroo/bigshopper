@@ -396,32 +396,59 @@ function category_display_load($cat_id) {
 
                 echo '<td>';
                     echo '<ul class="product_summary">';
-                        echo '<li>';
-                        echo $prod->name;
-                        echo '</li>';
-                        echo '<li>';
-                        echo $prod->sku;
-                        echo '</li>';
-                        echo '<li>';
-                        echo $prod->price;
-                        echo '</li>';
-                        echo '<li>';
-                        echo $prod->clothing_size;
-                        echo '</li>';
-                        echo '<li>';
-                        echo $prod->dimensions;
-                        echo '</li>';
-                        echo '<li>';
-                        echo $prod->description;
-                        echo '</li>';
-                        echo '<li>';
-
                         echo '<form action="cart_add.php" method="POST" enctype="multipart/form-data">';
-                        echo '<input type="hidden" name="id" id="id" value="'.$prod->id.'">';
-                        echo '<input type="submit" name="submit" value="Toevoegen aan Winkelmandje">';
-                        echo '</form>';
+                        echo '<input type="hidden" name="id" value="'.$prod->id.'">';
 
+                        echo '<li>';
+                        echo '<b>Naam</b>: '.$prod->name;
                         echo '</li>';
+                        echo '<li>';
+                        echo '<b>Product nr</b>: '.$prod->sku;
+                        echo '</li>';
+                        echo '<li>';
+                        echo '<b>Prijs</b>: '. number_format($prod->price, 2, ',', '.') .' euro';
+                        echo '</li>';
+                        echo '<li>';
+                        if (trim($prod->clothing_size) !== '') {
+                            $clothing_sizes = explode (";", $prod->clothing_size);
+                            if (count($clothing_sizes) > 1) {
+                                $list = array();
+                                foreach ($clothing_sizes as $option) {
+                                    $row = array();
+                                    $row['name']  = $option;
+                                    $row['value'] = $option;
+                                    array_push($list, $row);
+                                }
+                                form_field_dropdown('clothing_size', '<b>Maat</b>', $list, '', False, True);
+                            } else {
+                                echo '<b>Maat</b>: '.$prod->clothing_size;
+                            }
+                        }
+                        echo '</li>';
+                        echo '<li>';
+                        if (trim($prod->dimensions) !== '') {
+                            $dimensions = explode (";", $prod->dimensions);
+                            if (count($dimensions) > 1) {
+                                $list = array();
+                                foreach ($dimensions as $option) {
+                                    $row = array();
+                                    $row['name']  = $option;
+                                    $row['value'] = $option;
+                                    array_push($list, $row);
+                                }
+                                form_field_dropdown('dimensions', '<b>Afmetingen</b>', $list, '', False, True);
+                            } else {
+                                echo '<b>Afmetingen</b>: '.$prod->dimensions;
+                            }
+                        }
+                        echo '</li>';
+                        echo '<li>';
+                        echo '<b>Omschrijving</b>: <br>'.$prod->description;
+                        echo '</li>';
+                        echo '<li>';
+                        echo '<input type="submit" name="submit" value="Toevoegen aan Winkelmandje">';
+                        echo '</li>';
+                        echo '</form>';
                     echo '</ul>';
                 echo '</td>';
 /*

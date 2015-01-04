@@ -81,4 +81,79 @@ function section_display($article_id) {
     article_display($article);
 }
 
+
+function form_field_text($name, $text, $default_value, $max_chars, $placeholder, $autofocus, $required, $autocomplete) {
+    echo '<label for="'.$name.'">'.$text.':</label>';
+    echo '<input type="text" name="'.$name.'" id="'.$name.'"';
+    echo ' value="'.$default_value.'" size="'.$max_chars.'" maxlength="'.$max_chars.'" placeholder="'.$placeholder.'"';
+    if ($autofocus === True) {
+        echo ' autofocus';
+    }
+    if ($required === True) {
+        echo ' required';
+    }
+    if ($autocomplete === True) {
+        echo 'autocomplete="on"';
+    }
+    echo ' />';
+    echo "\n";
+}
+
+function form_field_file($name, $text, $autofocus, $required) {
+    echo '<label for="'.$name.'">'.$text.':</label>';
+    echo '<input type="file" name="'.$name.'" id="'.$name.'"';
+    if ($autofocus === True) {
+        echo ' autofocus';
+    }
+    if ($required === True) {
+        echo ' required';
+    }
+    echo ' />';
+    echo "\n";
+}
+
+function form_field_dropdown($name, $text, $list, $selected_value, $autofocus, $required) {
+    echo '<label for="'.$name.'">'.$text.': </label>';
+
+    echo '<select name="'.$name.'" id="'.$name.'"';
+    if ($autofocus === True) {
+        echo ' autofocus';
+    }
+    if ($required === True) {
+        echo ' required';
+    }
+    echo '>';
+    foreach ($list as $row) {
+        echo '<option value="'.$row['value'].'" ';
+        if ($selected_value === $row['value']) {
+            echo 'selected';
+        }
+        echo '>'.$row['name'].'</option>';
+    }
+    echo '</select>';
+}
+
+/*
+function form_field_radio($name, $text, $max, $placeholder, $autofocus, $required, $autocomplete) {
+                        <label for="faction">Speler of observator?</label>
+                        <ul>
+                            <li>
+                                <div class="tip">
+                                <label for="rd_speler">Paintball speler (12,50 euro)</label>
+                                <input id="rd_speler" class="radio" type="radio"
+                                    name="gotgame" value="speler"
+                                    checked="checked"></input>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="tip">
+                                <label for="rd_nonspeler">Observator (5,- euro)</label>
+                                <input id="rd_nonspeler" class="radio" type="radio"
+                                    name="gotgame"
+                                    value="observator"></input>
+                                </div>
+                            </li>
+                        </ul>
+*/
+
 ?>

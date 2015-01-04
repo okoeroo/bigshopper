@@ -90,6 +90,7 @@ if (count($cart) == 0) {
         echo '<th>Subtotaal</th>';
     echo '</tr>';
 
+    $cnt = 0;
     foreach ($cart as $cart_row) {
         if ($cnt % 2 === 0) {
             echo '<tr>';
