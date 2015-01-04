@@ -414,6 +414,14 @@ function category_display_load($cat_id) {
                         echo '<li>';
                         echo $prod->description;
                         echo '</li>';
+                        echo '<li>';
+
+                        echo '<form action="cart_add.php" method="POST" enctype="multipart/form-data">';
+                        echo '<input type="hidden" name="id" id="id" value="'.$prod->id.'">';
+                        echo '<input type="submit" name="submit" value="Toevoegen aan Winkelmandje">';
+                        echo '</form>';
+
+                        echo '</li>';
                     echo '</ul>';
                 echo '</td>';
 /*
@@ -446,7 +454,6 @@ function category_display_load($cat_id) {
             echo '</tr>';
 */
         echo '</table>'."\n";
-        echo '</form>' . "\n";
 
         echo '</td>'."\n";
 

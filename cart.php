@@ -10,13 +10,6 @@ require_once 'session.php';
 require_once 'category.php';
 
 
-function show_hardcoded_frontpage($db) {
-    /* Hard coded: article 2 */
-    section_display(2);
-
-    /* Load all products in memory from DB */
-    $products = products_load();
-}
 
 /* Global initializers */
 if (!initialize()) {
