@@ -168,6 +168,7 @@ body {
 
 #cart_product_list {
     border-collapse: collapse;
+    font-size: 0.9em;
 }
 
 #cart_product_list td, th {
@@ -175,11 +176,11 @@ body {
 }
 
 #cart_product_list th {
-    font-size: 1.1em;
+    font-size: 1.0em;
     text-align: left;
     padding-top: 5px;
     padding-bottom: 4px;
-    padding-right: 4vw;
+    padding-right: 3.5vw;
     background-color: #de5873;
     color: #ffffff;
 }

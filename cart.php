@@ -37,7 +37,8 @@ function cart_get_session_products() {
            '       products.description, products.price, '.
            '       shoppingcart.clothing_size, shoppingcart.dimensions, '.
            '       products.changed_on, '.
-           '       shoppingcart.count '.
+           '       shoppingcart.count, '.
+           '       shoppingcart.id as shoppingcart_id'.
            '  FROM products, sessions, shoppingcart '.
            ' WHERE shoppingcart.product_id = products.id'.
            '   AND sessions.id = shoppingcart.session_id'.
@@ -65,8 +66,9 @@ function cart_get_session_products() {
         $prod = new Product();
         $prod->fillFromRow($row);
 
-        $cart_item['prod']  = $prod;
-        $cart_item['count'] = $row['count'];
+        $cart_item['prod']            = $prod;
+        $cart_item['count']           = $row['count'];
+        $cart_item['shoppingcart_id'] = $row['shoppingcart_id'];
 
         array_push($cart, $cart_item);
     }
@@ -88,6 +90,7 @@ if (count($cart) == 0) {
         echo '<th>Prijs</th>';
         echo '<th>Aantal</th>';
         echo '<th>Subtotaal</th>';
+        echo '<th>Verwijderen?</th>';
     echo '</tr>';
 
     $cnt = 0;
@@ -111,6 +114,15 @@ if (count($cart) == 0) {
             echo '<td>'.
                     number_format($cart_row['prod']->price * $cart_row['count'], 2, ',', '.')
                 .' euro</td>';
+
+            echo '<td>';
+                echo '<center>';
+                echo '<form action="cart_del.php" method="POST" enctype="multipart/form-data">' . "\n";
+                echo '<input type="hidden" name="shoppingcart_id" value="'.$cart_row['shoppingcart_id'].'">';
+                echo '<input type="submit" name="submit" value="     Delete     ">'."\n";
+                echo '</form>';
+                echo '</center>';
+            echo '</td>';
         echo '</tr>';
     }
 
