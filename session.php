@@ -112,7 +112,7 @@ function session_update_token($token, $valid_for_seconds) {
 
 function session_cookie_new() {
     $db = $GLOBALS['db'];
-    $site = new Site;
+    $site = $GLOBALS['site'];
 
     $sessiontoken = secure_random_sha256();
     $valid_until_for_seconds = time() + $site->cookie_seconds;
@@ -120,13 +120,26 @@ function session_cookie_new() {
     setcookie($site->cookie_name,
               $sessiontoken,
               $valid_until_for_seconds,
-              time() + $site->cookie_seconds,
               '/',
               $site->cookie_scope,
-              TRUE);
+              False,
+              True);
 
     session_insert_token($sessiontoken, $site->cookie_seconds);
     return;
+}
+
+function session_get_cookie_value() {
+    $site = $GLOBALS['site'];
+
+    var_dump($_COOKIE);
+
+    if (isset($_COOKIE[$site->cookie_name]) &&
+        strlen($_COOKIE[$site->cookie_name]) == 64) {
+        return $_COOKIE[$site->cookie_name];
+    } else {
+        return NULL;
+    }
 }
 
 
@@ -149,12 +162,14 @@ function session_is_cookie_valid($cookie) {
 
 function session_mngt() {
     $db = $GLOBALS['db'];
-    $site = new Site;
+    $site = $GLOBALS['site'];
 
     /* Is cookie set and if set a candidate session cookie?
      * Length is 64 bytes, because of the SHA256 output */
     if (isset($_COOKIE[$site->cookie_name]) &&
         strlen($_COOKIE[$site->cookie_name]) == 64) {
+
+        echo 'have a session cookie<br>';
 
         /* Is the session cookie valid */
         if (session_is_cookie_valid($_COOKIE[$site->cookie_name])) {
@@ -165,11 +180,13 @@ function session_mngt() {
         } else {
             /* Session went bad, create new session.
              * Note: All passed logon cookies are mute */
+            echo 'create new session<br>';
             session_cookie_new();
             return;
         }
     } else {
         /* New session to be created */
+        echo 'create new session<br>';
         session_cookie_new();
         return;
     }
