@@ -132,8 +132,6 @@ function session_cookie_new() {
 function session_get_cookie_value() {
     $site = $GLOBALS['site'];
 
-    var_dump($_COOKIE);
-
     if (isset($_COOKIE[$site->cookie_name]) &&
         strlen($_COOKIE[$site->cookie_name]) == 64) {
         return $_COOKIE[$site->cookie_name];
@@ -169,8 +167,6 @@ function session_mngt() {
     if (isset($_COOKIE[$site->cookie_name]) &&
         strlen($_COOKIE[$site->cookie_name]) == 64) {
 
-        echo 'have a session cookie<br>';
-
         /* Is the session cookie valid */
         if (session_is_cookie_valid($_COOKIE[$site->cookie_name])) {
 
@@ -180,17 +176,14 @@ function session_mngt() {
         } else {
             /* Session went bad, create new session.
              * Note: All passed logon cookies are mute */
-            echo 'create new session<br>';
             session_cookie_new();
             return;
         }
     } else {
         /* New session to be created */
-        echo 'create new session<br>';
         session_cookie_new();
         return;
     }
-
     return;
 }
 
