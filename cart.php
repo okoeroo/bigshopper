@@ -35,7 +35,7 @@ function cart_get_session_products() {
 
     $sql = 'SELECT products.id, products.sku, products.name, '.
            '       products.description, products.price, '.
-           '       products.clothing_size, products.dimensions, '.
+           '       shoppingcart.clothing_size, shoppingcart.dimensions, '.
            '       products.changed_on, '.
            '       shoppingcart.count '.
            '  FROM products, sessions, shoppingcart '.

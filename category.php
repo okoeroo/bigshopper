@@ -422,6 +422,7 @@ function category_display_load($cat_id) {
                                 form_field_dropdown('clothing_size', '<b>Maat</b>', $list, '', False, True);
                             } else {
                                 echo '<b>Maat</b>: '.$prod->clothing_size;
+                                echo '<input type="hidden" name="clothing_size" value="'.$prod->clothing_size.'">';
                             }
                         }
                         echo '</li>';
@@ -439,6 +440,7 @@ function category_display_load($cat_id) {
                                 form_field_dropdown('dimensions', '<b>Afmetingen</b>', $list, '', False, True);
                             } else {
                                 echo '<b>Afmetingen</b>: '.$prod->dimensions;
+                                echo '<input type="hidden" name="dimensions" value="'.$prod->dimensions.'">';
                             }
                         }
                         echo '</li>';

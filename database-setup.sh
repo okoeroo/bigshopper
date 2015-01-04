@@ -82,6 +82,8 @@ CREATE TABLE shoppingcart (
         session_id      INT NOT NULL,
         product_id      INT NOT NULL,
         count           INT NOT NULL,
+        clothing_size   VARCHAR(50),
+        dimensions      VARCHAR(50),
         changed_on      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                             ON UPDATE CURRENT_TIMESTAMP
     );
