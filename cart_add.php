@@ -158,7 +158,6 @@ if (!cart_add_product_to_cart(session_get_cookie_value(),
     echo "Failure";
 }
 
-return;
 echo '<!DOCTYPE HTML>'."\n";
 echo '<html lang="en-US"><head><meta charset="UTF-8">'."\n";
 echo '<meta http-equiv="refresh" content="1;url='.$_SERVER['HTTP_REFERER'].'">';
