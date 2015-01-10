@@ -15,15 +15,27 @@ function cart_product_and_session_count($session_id, $product_id, $dimensions, $
     $sql = 'SELECT count '.
            '  FROM shoppingcart '.
            ' WHERE session_id    = :session_id '.
-           '   AND product_id    = :product_id '.
-           '   AND dimensions    = :dimensions '.
-           '   AND clothing_size = :clothing_size';
-    $sth = $db->handle->prepare($sql);
-    if (! $sth->execute(array(
+           '   AND product_id    = :product_id ';
+
+    $params = array(
         ':session_id'=>$session_id,
-        ':product_id'=>$product_id,
-        ':dimensions'=>$dimensions,
-        ':clothing_size'=>$clothing_size))) {
+        ':product_id'=>$product_id);
+    if ($dimensions === NULL) {
+        $sql = $sql . ' AND dimensions IS NULL ';
+    } else {
+        $sql =  $sql . ' AND dimensions = :dimensions ';
+        $params[':dimensions'] = $dimensions;
+    }
+
+    if ($clothing_size === NULL) {
+        $sql = $sql . ' AND clothing_size IS NULL ';
+    } else {
+        $sql = $sql . ' AND clothing_size = :clothing_size ';
+        $params[':clothing_size'] = $clothing_size;
+    }
+
+    $sth = $db->handle->prepare($sql);
+    if (! $sth->execute($params)) { 
         return -2; /* Error */
     }
     $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
@@ -70,21 +82,31 @@ function cart_add_product_to_cart($token, $product_id, $dimensions, $clothing_si
 
     /* Checked value: Session ID and Product ID exist, count will be updated */
     } else {
-        $cur_count++;
-
         $sql = 'UPDATE shoppingcart '.
                '   SET count = :new_count'.
                ' WHERE session_id = :session_id '.
-               '   AND product_id = :product_id'.
-               '   AND dimensions = :dimensions'.
-               '   AND clothing_size = :clothing_size ';
-        $sth = $db->handle->prepare($sql);
-        if (! $sth->execute(array(
-            ':new_count'=>$cur_count,
+               '   AND product_id = :product_id';
+
+        $params = array(
+            ':new_count'=>$cur_count + 1,
             ':session_id'=>$session->id,
-            ':product_id'=>$product_id,
-            ':dimensions'=>$dimensions,
-            ':clothing_size'=>$clothing_size))) {
+            ':product_id'=>$product_id);
+        if ($dimensions === NULL) {
+            $sql = $sql . ' AND dimensions IS NULL ';
+        } else {
+            $sql =  $sql . ' AND dimensions = :dimensions ';
+            $params[':dimensions'] = $dimensions;
+        }
+
+        if ($clothing_size === NULL) {
+            $sql = $sql . ' AND clothing_size IS NULL ';
+        } else {
+            $sql = $sql . ' AND clothing_size = :clothing_size ';
+            $params[':clothing_size'] = $clothing_size;
+        }
+
+        $sth = $db->handle->prepare($sql);
+        if (! $sth->execute($params)) {
             return False;
         }
         return True;
@@ -128,6 +150,7 @@ if (isset($_POST['clothing_size'])) {
     $clothing_size = NULL;
 }
 
+
 if (!cart_add_product_to_cart(session_get_cookie_value(),
                               $product_id,
                               $dimensions,
@@ -135,6 +158,7 @@ if (!cart_add_product_to_cart(session_get_cookie_value(),
     echo "Failure";
 }
 
+return;
 echo '<!DOCTYPE HTML>'."\n";
 echo '<html lang="en-US"><head><meta charset="UTF-8">'."\n";
 echo '<meta http-equiv="refresh" content="1;url='.$_SERVER['HTTP_REFERER'].'">';
