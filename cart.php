@@ -10,7 +10,6 @@ require_once 'session.php';
 require_once 'category.php';
 
 
-
 /* Global initializers */
 if (!initialize()) {
     http_response_code(500);
@@ -29,7 +28,7 @@ navigation_display(navigation_load());
 
 echo '<h2>Winkelwagen</h2>';
 
-function cart_get_session_products() {
+function cart_get_session_products($token) {
     $db = $GLOBALS['db'];
     $cart = array();
 
@@ -44,7 +43,7 @@ function cart_get_session_products() {
            '   AND sessions.id = shoppingcart.session_id'.
            '   AND sessions.token = :token';
 
-    $token = session_get_cookie_value();
+    /* $token = session_get_cookie_value(); */
 
     $sth = $db->handle->prepare($sql);
     if (! $sth->execute(array(
@@ -76,7 +75,8 @@ function cart_get_session_products() {
 }
 
 /* Get all the selected products */
-$cart = cart_get_session_products();
+$token = session_get_cookie_value();
+$cart = cart_get_session_products($token);
 if (count($cart) == 0) {
     echo '<h3>Uw winkelmandje is leeg</h3>';
 } else {
@@ -131,20 +131,29 @@ if (count($cart) == 0) {
         $total += $cart_row['prod']->price * $cart_row['count'];
     }
 
+
         echo '<tr>'; 
-            echo '<th>Totaal</td>';
-            echo '<th>&nbsp;</td>';
-            echo '<th>&nbsp;</td>';
-            echo '<th>&nbsp;</td>';
-            echo '<th>&nbsp;</td>';
-            echo '<th>&nbsp;</td>';
-            echo '<th>&nbsp;</td>';
-            echo '<th>'.
-                    number_format($total, 2, ',', '.')
-                .' euro</td>';
+            echo '<th>Totaal</th>';
+            echo '<th>&nbsp;</th>';
+            echo '<th>&nbsp;</th>';
+            echo '<th>&nbsp;</th>';
+            echo '<th>&nbsp;</th>';
+            echo '<th>&nbsp;</th>';
+            echo '<th>&nbsp;</th>';
+            echo '<th>';
+                echo number_format($total, 2, ',', '.').' euro';
+            echo '</th>';
         echo '</tr>';
     echo '</table>';
+
+    echo '<br>';
+    $token = session_get_cookie_value();
+    echo '<form action="order_add.php" method="POST" enctype="multipart/form-data">' . "\n";
+    echo '<input type="hidden" name="token" value="'.$token.'">';
+    echo '<input type="submit" name="submit" value="     Bestel     '.'">';
+    echo '</form>';
 }
+
 
 $tail = new Tail;
 $tail->display();
