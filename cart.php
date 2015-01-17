@@ -28,51 +28,6 @@ navigation_display(navigation_load());
 
 echo '<h2>Winkelwagen</h2>';
 
-function cart_get_session_products($token) {
-    $db = $GLOBALS['db'];
-    $cart = array();
-
-    $sql = 'SELECT products.id, products.sku, products.name, '.
-           '       products.description, products.price, '.
-           '       shoppingcart.clothing_size, shoppingcart.dimensions, '.
-           '       products.changed_on, '.
-           '       shoppingcart.count, '.
-           '       shoppingcart.id as shoppingcart_id'.
-           '  FROM products, sessions, shoppingcart '.
-           ' WHERE shoppingcart.product_id = products.id'.
-           '   AND sessions.id = shoppingcart.session_id'.
-           '   AND sessions.token = :token';
-
-    /* $token = session_get_cookie_value(); */
-
-    $sth = $db->handle->prepare($sql);
-    if (! $sth->execute(array(
-        ':token'=>$token))) {
-        return NULL;
-    }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC);
-
-    /* Empty cart? */
-    if (count($rs) === 0) {
-        return NULL;
-    }
-
-    /* Create the cart array, filled with items that are of class Product and
-     * their registered amount */
-    foreach($rs as $row) {
-        $cart_item = array();
-
-        $prod = new Product();
-        $prod->fillFromRow($row);
-
-        $cart_item['prod']            = $prod;
-        $cart_item['count']           = $row['count'];
-        $cart_item['shoppingcart_id'] = $row['shoppingcart_id'];
-
-        array_push($cart, $cart_item);
-    }
-    return $cart;
-}
 
 /* Get all the selected products */
 $token = session_get_cookie_value();
@@ -147,11 +102,8 @@ if (count($cart) == 0) {
     echo '</table>';
 
     echo '<br>';
-    $token = session_get_cookie_value();
-    echo '<form action="order_add.php" method="POST" enctype="multipart/form-data">' . "\n";
-    echo '<input type="hidden" name="token" value="'.$token.'">';
-    echo '<input type="submit" name="submit" value="     Bestel     '.'">';
-    echo '</form>';
+    echo '<a href="/order.php" class="button">Bestel</a>';
+    echo '</p>';
 }
 
 

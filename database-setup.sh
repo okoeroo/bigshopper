@@ -88,6 +88,36 @@ CREATE TABLE shoppingcart (
                             ON UPDATE CURRENT_TIMESTAMP
     );
 
+CREATE TABLE orders (
+        id              INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        session_id      INT NOT NULL,
+        product_id      INT NOT NULL,
+        count           INT NOT NULL,
+        clothing_size   VARCHAR(50),
+        dimensions      VARCHAR(50),
+        changed_on      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            ON UPDATE CURRENT_TIMESTAMP
+    );
+
+CREATE TABLE customers (
+        id              INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        order_id        INT,
+        firstname       VARCHAR(88),
+        lastname        VARCHAR(88),
+        streetname      VARCHAR(160),
+        house_number    VARCHAR(15),
+        streetname_2    VARCHAR(160),
+        house_number_2  VARCHAR(15),
+        zipcode         VARCHAR(15),
+        city            VARCHAR(100),
+        country         VARCHAR(100),
+        email           VARCHAR(150),
+        transport       VARCHAR(50),
+        changed_on      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            ON UPDATE CURRENT_TIMESTAMP
+    );
+
+
 EOF
 
 mysql -uroot -p"${ROOT_PASS}" < ${TMPFILE}

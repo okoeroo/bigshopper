@@ -133,27 +133,28 @@ function form_field_dropdown($name, $text, $list, $selected_value, $autofocus, $
     echo '</select>';
 }
 
-/*
-function form_field_radio($name, $text, $max, $placeholder, $autofocus, $required, $autocomplete) {
-                        <label for="faction">Speler of observator?</label>
-                        <ul>
-                            <li>
-                                <div class="tip">
-                                <label for="rd_speler">Paintball speler (12,50 euro)</label>
-                                <input id="rd_speler" class="radio" type="radio"
-                                    name="gotgame" value="speler"
-                                    checked="checked"></input>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="tip">
-                                <label for="rd_nonspeler">Observator (5,- euro)</label>
-                                <input id="rd_nonspeler" class="radio" type="radio"
-                                    name="gotgame"
-                                    value="observator"></input>
-                                </div>
-                            </li>
-                        </ul>
-*/
+function form_field_radio($name, $text, $list, $selected_value, $autofocus, $required) {
+    echo '<label for="'.$name.'">'.$text.': </label>';
+
+    foreach ($list as $row) {
+        echo '<input class="radio" type="radio"';
+
+        if ($autofocus === True) {
+            echo ' autofocus';
+        }
+        if ($required === True) {
+            echo ' required';
+        }
+
+        echo ' name="'.$row['name'].'" ';
+        echo ' value="'.$row['value'].'" ';
+
+        if ($selected_value === $row['value']) {
+            echo ' checked="checked" ';
+        }
+
+        echo '</input>';
+    }
+}
 
 ?>
