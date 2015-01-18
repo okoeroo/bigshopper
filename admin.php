@@ -25,7 +25,7 @@ if (!initialize()) {
 
 
 function categories_to_dropdown_list() {
-    $categories = categories_load();
+    $categories = categories_load(NULL);
     $list = array();
 
     foreach ($categories as $cat) {
@@ -50,6 +50,7 @@ function category_display_edit($cat) {
 
     echo '<h2>'; form_field_text('name', 'Categorie naam', $cat->name, 60, 'Categorie naam', False, True, False); echo '</h2>';
     echo '<h3>'; form_field_text('description', 'Categorie omschrijving', $cat->description, 200, 'Categorie omschrijving', False, False, False);  echo '</h3>';
+    echo '<h3>'; form_field_text('priority', 'Prioriteit', $cat->priority, 3, 'Prioriteit', False, False, False);  echo '</h3>';
     echo '<input type="submit" name="submit" value="Update">'  . "\n";
     echo '</form>';
 
@@ -173,6 +174,7 @@ echo '    <div class=list>' . "\n";
 
 echo '<li>'; form_field_text('name',         'Naam',         '', 50,    'Naam van category',         False, True,  False); echo '</li>';
 echo '<li>'; form_field_text('description',  'Omschrijving', '', 180,   'Omschrijving van category', False, False, False); echo '</li>';
+echo '<li>'; form_field_text('priority',     'Prioriteit',   '0', 3,     'Prioriteit',                False, False, False); echo '</li>';
 
 echo '      <input type="submit" name="submit" value="Toevoegen">'  . "\n";
 
@@ -182,7 +184,7 @@ echo '    </form>'  . "\n";
 
 echo '<hr>';
 
-$categories = categories_load();
+$categories = categories_load(NULL);
 foreach ($categories as $cat) {
     category_display_edit($cat);
 }

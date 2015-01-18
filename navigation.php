@@ -3,7 +3,8 @@
 require 'category.php';
 
 function navigation_load() {
-    $categories = categories_load();
+    /* Select non-sticky categories */
+    $categories = categories_load(NULL);
     return $categories;
 }
 
@@ -22,8 +23,24 @@ function navigation_display($categories) {
     /* Spacer */
     echo '    <li class="nav_elem_spacer">&nbsp;</li>';
 
-    /* Categories */
+    /* Categories, non-sticky/normal */
     foreach ($categories as $cat) {
+        if ($cat->sticky !== 0) {
+            continue;
+        }
+        echo '<a href="/index.php?category=' . $cat->id . '">';
+        echo '    <li class="nav_elem">' . $cat->name . '</li>';
+        echo '</a>';
+    }
+
+    /* Spacer */
+    echo '    <li class="nav_elem_spacer">&nbsp;</li>';
+
+    /* Categories, sticky/special */
+    foreach ($categories as $cat) {
+        if ($cat->sticky !== 1) {
+            continue;
+        }
         echo '<a href="/index.php?category=' . $cat->id . '">';
         echo '    <li class="nav_elem">' . $cat->name . '</li>';
         echo '</a>';

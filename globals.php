@@ -4,6 +4,8 @@ require_once 'config.php';
 require_once 'database.php';
 
 function initialize() {
+    date_default_timezone_set('Etc/UTC');
+
     $GLOBALS['site'] = new Site;
 
     /* Open DB */

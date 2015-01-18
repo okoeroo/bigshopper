@@ -51,6 +51,7 @@ CREATE TABLE categories (
         id              INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
         name            VARCHAR(100) NOT NULL,
         description     VARCHAR(1024),
+        sticky          INT NOT NULL,
         changed_on      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                             ON UPDATE CURRENT_TIMESTAMP
     );

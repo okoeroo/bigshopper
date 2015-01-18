@@ -1,15 +1,22 @@
 <?php
 
+require_once 'database.php';
+
 class Category {
     public $id;
     public $name;
     public $description;
+    public $priority;
+    public $sticky;
     public $changed_on;
 
     function fillFromRow($row) {
+        /* var_dump($row); */
         $this->id           = $row['id'];
         $this->name         = $row['name'];
         $this->description  = $row['description'];
+        $this->priority     = $row['priority'];
+        $this->sticky       = $row['sticky'];
         $this->changed_on   = $row['changed_on'];
     }
 
@@ -30,14 +37,25 @@ class Category {
                 throw new Exception('input check failure description');
             }
         }
+
+        $this->priority         = intval(trim($_POST["priority"]));
+        if (! empty($this->priority)) {
+            if (! filter_var($this->priority, FILTER_SANITIZE_NUMBER_INT)) {
+                throw new Exception('input check failure priority');
+            }
+        }
+
+        /* TODO: hardwired to a non-sticky category */
+        $this->sticky = 0;
     }
 
     function store() {
         $db = $GLOBALS['db'];
 
+        /* TODO: hardwired to a non-sticky category */
         $sql = 'INSERT INTO categories' .
-               '            (name, description)'.
-               '     VALUES (:name, :description)';
+               '            (name,  description,  priority, sticky)'.
+               '     VALUES (:name, :description, 0,        0)';
 
         try {
             $sth = $db->handle->prepare($sql);
@@ -59,7 +77,7 @@ class Category {
         $db = $GLOBALS['db'];
 
         $sql = 'UPDATE categories' .
-               '   SET name = :name, description = :description'.
+               '   SET name = :name, description = :description, priority = :priority, sticky = :sticky'.
                ' WHERE id = :id';
 
         try {
@@ -67,7 +85,10 @@ class Category {
             $sth->execute(array(
                 ':id'=>$this->id,
                 ':name'=>$this->name,
-                ':description'=>$this->description));
+                ':description'=>$this->description,
+                ':priority'=>$this->priority,
+                ':sticky'=>$this->sticky
+                ));
 
         } catch (Exception $e) {
             if ($db->debug === True) {
@@ -135,18 +156,32 @@ function category_delete_by_id($cat_id) {
 }
 
 
-function categories_load() {
+function categories_load($sticky) {
     $db = $GLOBALS['db'];
     $categories = array();
 
-    $sql = 'SELECT id, name, description, changed_on '.
+    $sql = 'SELECT id, name, description, priority, sticky, changed_on '.
            '  FROM categories';
 
-    $sth = $db->handle->prepare($sql);
-    if (! $sth->execute()) {
-        return NULL;
+    if ($sticky === NULL) {
+        $sql = $sql . ' ORDER BY priority';
+        $sth = $db->handle->prepare($sql);
+        if (! $sth->execute()) {
+            return NULL;
+        }
+    } else {
+        $sql = $sql . ' WHERE sticky = :sticky';
+        $sql = $sql . ' ORDER BY priority';
+
+        $sth = $db->handle->prepare($sql);
+        if (! $sth->execute(array(
+                ':sticky'=>$sticky))) {
+            return NULL;
+        }
     }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+
+    /* Cast to native types */
+    $rs = db_cast_query_results($sth);
 
     foreach($rs as $row) {
         $cat = new Category();
@@ -160,7 +195,7 @@ function categories_load() {
 function category_search_by_id($id) {
     $db = $GLOBALS['db'];
 
-    $sql = 'SELECT id, name, description, changed_on '.
+    $sql = 'SELECT id, name, description, priority, sticky, changed_on '.
            '  FROM categories '.
            ' WHERE categories.id = :id';
 
@@ -182,7 +217,7 @@ function category_search_by_id($id) {
 function category_search_by_name($name) {
     $db = $GLOBALS['db'];
 
-    $sql = 'SELECT id, name, description, changed_on '.
+    $sql = 'SELECT id, name, description, priority, sticky, changed_on '.
            '  FROM categories '.
            ' WHERE categories.name = :name';
 
