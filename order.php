@@ -43,13 +43,13 @@ if (count($cart) == 0) {
     echo '<form action="customer_add.php" method="POST" enctype="multipart/form-data">' . "\n";
     echo '<input type="hidden" name="id" id="id" value="'.$token.'">';
 
-    form_field_text('firstname',    'Voornaam',    '',      88,  '', False, True, False); echo '</br>';
-    form_field_text('lastname',     'Achternaam',  '',      88,  '', False, True, False); echo '</br>';
-    form_field_text('streetname',   'Straatnaam',  '',      160, '', False, True, False); echo '</br>';
-    form_field_text('house_number', 'Huisnummer en toevoeging',  '', 15, '', False, True, False); echo '</br>';
-    form_field_text('zipcode',      'Postcode',    '',      6,   '1234AB', False, True, False); echo '</br>';
-    form_field_text('stad',         'Woonplaats',  '',      100, '', False, True, False); echo '</br>';
-    form_field_text('email',        'Emailadres',  '',      150, '', False, True, False); echo '</br>';
+    form_field_text('firstname',    'Voornaam',    '',                  24,     88,  '', False, True, False); echo '</br>';
+    form_field_text('lastname',     'Achternaam',  '',                  24,     88,  '', False, True, False); echo '</br>';
+    form_field_text('streetname',   'Straatnaam',  '',                  24,     160, '', False, True, False); echo '</br>';
+    form_field_text('house_number', 'Huisnummer en toevoeging',  '',    15,     15, '', False, True, False); echo '</br>';
+    form_field_text('zipcode',      'Postcode',    '',                   6,     6,   '1234AB', False, True, False); echo '</br>';
+    form_field_text('stad',         'Woonplaats',  '',                  24,     100, '', False, True, False); echo '</br>';
+    form_field_text('email',        'Emailadres',  '',                  24,     150, '', False, True, False); echo '</br>';
 
 /* function form_field_radio($name, $text, $list, $selected_value, $autofocus, $required) { */
 

@@ -82,10 +82,11 @@ function section_display($article_id) {
 }
 
 
-function form_field_text($name, $text, $default_value, $max_chars, $placeholder, $autofocus, $required, $autocomplete) {
+function form_field_text($name, $text, $default_value, $width_chars, $max_chars, $placeholder, $autofocus, $required, $autocomplete) {
     echo '<label for="'.$name.'">'.$text.':</label>';
     echo '<input type="text" name="'.$name.'" id="'.$name.'"';
-    echo ' value="'.$default_value.'" size="'.$max_chars.'" maxlength="'.$max_chars.'" placeholder="'.$placeholder.'"';
+    echo ' value="'.$default_value.'" size="'.$width_chars.
+         '  " maxlength="'.$max_chars.'" placeholder="'.$placeholder.'"';
     if ($autofocus === True) {
         echo ' autofocus';
     }

@@ -48,9 +48,9 @@ function category_display_edit($cat) {
     echo '<form action="category_edit.php" method="POST" enctype="multipart/form-data">' . "\n";
     echo '<input type="hidden" name="id" id="id" value="'.$cat->id.'">';
 
-    echo '<h2>'; form_field_text('name', 'Categorie naam', $cat->name, 60, 'Categorie naam', False, True, False); echo '</h2>';
-    echo '<h3>'; form_field_text('description', 'Categorie omschrijving', $cat->description, 200, 'Categorie omschrijving', False, False, False);  echo '</h3>';
-    echo '<h3>'; form_field_text('priority', 'Prioriteit', $cat->priority, 3, 'Prioriteit', False, False, False);  echo '</h3>';
+    echo '<h2>'; form_field_text('name',        'Categorie naam',           $cat->name,         42,     60, 'Categorie naam', False, True, False); echo '</h2>';
+    echo '<h3>'; form_field_text('description', 'Categorie omschrijving',   $cat->description,  42,     200, 'Categorie omschrijving', False, False, False);  echo '</h3>';
+    echo '<h3>'; form_field_text('priority',    'Prioriteit',               $cat->priority,     3,      3, 'Prioriteit', False, False, False);  echo '</h3>';
     echo '<input type="submit" name="submit" value="Update">'  . "\n";
     echo '</form>';
 
@@ -99,12 +99,12 @@ function category_display_edit($cat) {
                 echo '<div class=list>' . "\n";
                 echo '<input type="hidden" name="id" id="id" value="'.$prod->id.'">';
 
-                form_field_text('sku',          'SKU',              $prod->sku,             15,     'SKU nummer',               True, True, True); echo '<br>';
-                form_field_text('name',         'Naam',             $prod->name,            50,     'Naam van artikel',         False, True, False); echo '<br>';
-                form_field_text('description',  'Omschrijving',     $prod->description,    180,     'Omschrijving van artikel', False, False, False); echo '<br>';
-                form_field_text('price',        'Prijs',            $prod->price,           13,     '0,00',                     False, True, False); echo '<br>';
-                form_field_text('clothing_size','Kleding maat (*)', $prod->clothing_size,   50,     '',                         False, False, False); echo '<br>';
-                form_field_text('dimensions',   'HxBxD (*)',        $prod->dimensions,      50,     '10x15x2',                  False, False, False); echo '<br>';
+                form_field_text('sku',          'SKU',              $prod->sku,             15,     15,     'SKU nummer',               True, True, True); echo '<br>';
+                form_field_text('name',         'Naam',             $prod->name,            42,     50,     'Naam van artikel',         False, True, False); echo '<br>';
+                form_field_text('description',  'Omschrijving',     $prod->description,     42,     180,    'Omschrijving van artikel', False, False, False); echo '<br>';
+                form_field_text('price',        'Prijs',            $prod->price,           13,     13,     '0,00',                     False, True, False); echo '<br>';
+                form_field_text('clothing_size','Kleding maat (*)', $prod->clothing_size,   42,     50,     '',                         False, False, False); echo '<br>';
+                form_field_text('dimensions',   'HxBxD (*)',        $prod->dimensions,      42,     50,     '10x15x2',                  False, False, False); echo '<br>';
                 form_field_file('image',        'Foto',                                                                         False, False); echo '<br>';
                 $list = categories_to_dropdown_list();
                 form_field_dropdown('category', 'Category',         $list,                  $cat->id,                           False, True); echo '<br>';
@@ -147,12 +147,12 @@ echo '<h2>Nieuw artikel toevoegen</h2>';
 echo '    <form action="product_add.php" method="POST" enctype="multipart/form-data">' . "\n";
 echo '    <div class=list>' . "\n";
 
-echo '<li>'; form_field_text('sku',          'SKU',              '', 15,     'SKU nummer',               True, True, True); echo '</li>';
-echo '<li>'; form_field_text('name',         'Naam',             '', 50,    'Naam van artikel',          False, True, False); echo '</li>';
-echo '<li>'; form_field_text('description',  'Omschrijving',     '', 180,   'Omschrijving van artikel',  False, False, False); echo '</li>';
-echo '<li>'; form_field_text('price',        'Prijs',            '', 13,     '0,00',                     False, True, False); echo '</li>';
-echo '<li>'; form_field_text('clothing_size','Kleding maat (*)', '', 50,     '92;105;120',               False, False, False); echo '</li>';
-echo '<li>'; form_field_text('dimensions',   'HxBxD (*)',        '', 50,     '10x15x2;10x30x4',          False, False, False); echo '</li>';
+echo '<li>'; form_field_text('sku',          'SKU',              '',    15,     15,     'SKU nummer',               True, True, True); echo '</li>';
+echo '<li>'; form_field_text('name',         'Naam',             '',    42,     50,     'Naam van artikel',          False, True, False); echo '</li>';
+echo '<li>'; form_field_text('description',  'Omschrijving',     '',    42,     180,    'Omschrijving van artikel',  False, False, False); echo '</li>';
+echo '<li>'; form_field_text('price',        'Prijs',            '',    13,     13,     '0,00',                     False, True, False); echo '</li>';
+echo '<li>'; form_field_text('clothing_size','Kleding maat (*)', '',    42,     50,     '92;105;120',               False, False, False); echo '</li>';
+echo '<li>'; form_field_text('dimensions',   'HxBxD (*)',        '',    42,     50,     '10x15x2;10x30x4',          False, False, False); echo '</li>';
 echo '<li>'; form_field_file('image',        'Foto',                                                     False, True); echo '</li>';
 $list = categories_to_dropdown_list();
 echo '<li>';form_field_dropdown('category', 'Category',          $list,       NULL,                      False, True); echo '</li>';
@@ -172,9 +172,9 @@ echo '<h2>Nieuwe categorie toevoegen</h2>';
 echo '    <form action="category_add.php" method="POST" enctype="multipart/form-data">' . "\n";
 echo '    <div class=list>' . "\n";
 
-echo '<li>'; form_field_text('name',         'Naam',         '', 50,    'Naam van category',         False, True,  False); echo '</li>';
-echo '<li>'; form_field_text('description',  'Omschrijving', '', 180,   'Omschrijving van category', False, False, False); echo '</li>';
-echo '<li>'; form_field_text('priority',     'Prioriteit',   '0', 3,     'Prioriteit',                False, False, False); echo '</li>';
+echo '<li>'; form_field_text('name',         'Naam',         '',    42,     50,    'Naam van category',         False, True,  False); echo '</li>';
+echo '<li>'; form_field_text('description',  'Omschrijving', '',    42,     180,   'Omschrijving van category', False, False, False); echo '</li>';
+echo '<li>'; form_field_text('priority',     'Prioriteit',   '0',   3,      3,     'Prioriteit',                False, False, False); echo '</li>';
 
 echo '      <input type="submit" name="submit" value="Toevoegen">'  . "\n";
 
