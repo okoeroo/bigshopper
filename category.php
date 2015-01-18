@@ -204,7 +204,8 @@ function category_search_by_id($id) {
         ':id'=>$id))) {
         return NULL;
     }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC);  */
+    $rs = db_cast_query_results($sth);
 
     foreach($rs as $row) {
         $cat = new Category();
@@ -226,7 +227,8 @@ function category_search_by_name($name) {
         ':name'=>$name))) {
         return NULL;
     }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC);  */
+    $rs = db_cast_query_results($sth);
 
     foreach($rs as $row) {
         $cat = new Category();
@@ -249,7 +251,8 @@ function product_to_category_count_products($cat_id) {
         ':category_id'=>$cat_id))) {
         return -1;
     }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC);  */
+    $rs = db_cast_query_results($sth);
 
     foreach($rs as $row) {
         $cnt = intval($row['count']);

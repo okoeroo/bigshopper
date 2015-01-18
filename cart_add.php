@@ -38,7 +38,8 @@ function cart_product_and_session_count($session_id, $product_id, $dimensions, $
     if (! $sth->execute($params)) { 
         return -2; /* Error */
     }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC);  */
+    $rs = db_cast_query_results($sth);
     foreach($rs as $row) {
         return intval($row['count']); /* On found. report the number */
     }

@@ -53,7 +53,8 @@ function session_search_by_token($token) {
         ':token'=>$token))) {
         return NULL;
     }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC);  */
+    $rs = db_cast_query_results($sth);
 
     foreach($rs as $row) {
         $session = new Session();

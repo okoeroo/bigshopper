@@ -98,7 +98,8 @@ class Product {
                 ':product_id'=>$this->id))) {
             return False;
         }
-        $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+        /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC);  */
+        $rs = db_cast_query_results($sth);
         foreach($rs as $row) {
             $img = $row['img'];
             array_push($this->images, $img);
@@ -315,7 +316,8 @@ function products_load() {
     if (! $sth->execute()) {
         return NULL;
     }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC);  */
+    $rs = db_cast_query_results($sth);
 
     foreach($rs as $row) {
         $prod = new Product();
@@ -341,7 +343,8 @@ function product_search_by_id($id) {
         ':product_id'=>$id))) {
         return NULL;
     }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC);  */
+    $rs = db_cast_query_results($sth);
 
     foreach($rs as $row) {
         $prod = new Product();
@@ -366,7 +369,8 @@ function product_search_by_sku($sku) {
         ':sku'=>$sku))) {
         return NULL;
     }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC);  */
+    $rs = db_cast_query_results($sth);
 
     foreach($rs as $row) {
         $prod = new Product();
@@ -391,7 +395,8 @@ function product_search_by_name($name) {
         ':name'=>$name))) {
         return NULL;
     }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC);  */
+    $rs = db_cast_query_results($sth);
 
     foreach($rs as $row) {
         $prod = new Product();
@@ -418,7 +423,8 @@ function products_by_category_id($cat_id) {
             ':category_id'=>$cat_id))) {
         return NULL;
     }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC);  */
+    $rs = db_cast_query_results($sth);
     foreach($rs as $row) {
         $prod = new Product();
         $prod->fillFromRow($row);
@@ -447,7 +453,8 @@ function products_by_category_id($cat_id) {
             ':category_id'=>$cat_id))) {
         return NULL;
     }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC);  */
+    $rs = db_cast_query_results($sth);
 
     foreach($rs as $row) {
         $prod = new Product();
@@ -468,7 +475,8 @@ function sql_to_html_table($dbh, $sql) {
         return NULL;
     }
     echo '<table border=1>';
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC);  */
+    $rs = db_cast_query_results($sth);
     echo '<tr>';
     for ($i = 0; $i < $sth->columnCount(); $i++) {
         $meta = $sth->getColumnMeta($i);
@@ -507,7 +515,8 @@ function cart_get_session_products($token) {
         ':token'=>$token))) {
         return NULL;
     }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC);
+    /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC); */
+    $rs = db_cast_query_results($sth);
 
     /* Empty cart? */
     if (count($rs) === 0) {

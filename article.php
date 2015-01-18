@@ -23,7 +23,8 @@ function article_load($id) {
     if (! $sth->execute(array(':id'=>$id))) {
         return NULL;
     }
-    $rs = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    /* $rs = $sth->fetchAll(PDO::FETCH_ASSOC);  */
+    $rs = db_cast_query_results($sth);
 
     foreach($rs as $row) {
         $article = new Article();
