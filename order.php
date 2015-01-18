@@ -49,28 +49,32 @@ if (count($cart) == 0) {
     form_field_text('house_number', 'Huisnummer en toevoeging',  '',    15,     15, '', False, True, False); echo '</br>';
     form_field_text('zipcode',      'Postcode',    '',                   6,     6,   '1234AB', False, True, False); echo '</br>';
     form_field_text('stad',         'Woonplaats',  '',                  24,     100, '', False, True, False); echo '</br>';
-    form_field_text('email',        'Emailadres',  '',                  24,     150, '', False, True, False); echo '</br>';
+    form_field_email('email',       'Emailadres',  '',                  24,     150, '', False, True, False); echo '</br>';
 
-/* function form_field_radio($name, $text, $list, $selected_value, $autofocus, $required) { */
+    $list = array();
+    $row  = array(); $row['value'] = 'sending';      $row['text'] = 'Versturen';     array_push($list, $row);
+    $row  = array(); $row['value'] = 'pickup';       $row['text'] = 'Ophalen';       array_push($list, $row);
+
+    form_field_radio('transport', NULL, $list, 'sending', False, False);
+    echo '<br>';
+    /* echo '<textarea name="description" style="width:250px;height:150px;"></textarea>'; */
 
 /*
-    ->         order_id        INT,
-    ->         firstname       VARCHAR(88),
-    ->         lastname        VARCHAR(88),
-    ->         streetname      VARCHAR(160),
-    ->         house_number    VARCHAR(15),
-    ->         streetname_2    VARCHAR(160),
-    ->         house_number_2  VARCHAR(15),
-    ->         zipcode         VARCHAR(15),
-    ->         city            VARCHAR(100),
-    ->         country         VARCHAR(100),
-    ->         email           VARCHAR(150),
-    ->         transport       VARCHAR(50),
+    ->         order_id            INT,
+    ->         firstname           VARCHAR(88),
+    ->         lastname            VARCHAR(88),
+    ->         streetname          VARCHAR(160),
+    ->         house_number        VARCHAR(15),
+    ->         streetname_2        VARCHAR(160),
+    ->         house_number_2      VARCHAR(15),
+    ->         zipcode             VARCHAR(15),
+    ->         city                VARCHAR(100),
+    ->         country             VARCHAR(100),
+    ->         email               VARCHAR(150),
+    ->         transport           VARCHAR(50),
 */
 
-
-
-
+    echo '<br>';
     echo '<input type="submit" name="submit" value="Bestelling plaatsen">'  . "\n";
     echo '</form>';
 
