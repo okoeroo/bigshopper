@@ -53,11 +53,24 @@ class Head {
         echo '      <div class="header">' . "\n";
         echo '        <h1>All kids love</h1>' . "\n";
         echo '      </div>' . "\n";
+
+        /* Navigation bar */
+        navigation_display(navigation_load());
+
+        /* Begin of article */
+        echo '      <div class="section">';
+        echo '          <p>'."\n";
+
     }
 }
 
 class Tail {
     function display() {
+        /* End of article */
+        echo '          </p>'."\n";
+        echo '      </div>' . "\n";
+
+        /* Footer */
         echo '      <div class="footer">' . "\n";
         echo '          All kids love' . "\n";
         echo '          <div class="fb-like" data-href="https://www.facebook.com/pages/All-kids-love/1485746685040904" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>';

@@ -24,14 +24,8 @@ if (!initialize()) {
     return;
 }
 
-/* Session management */
-session_mngt();
-
 $head = new Head;
 $head->display();
-
-/* Navigation bar */
-navigation_display(navigation_load());
 
 
 /* Based on the query string, load various content */
@@ -56,7 +50,6 @@ if (count($query) === 1 && strlen($query[0]) === 0) {
         }
     }
 }
-
 
 
 $tail = new Tail;

@@ -209,6 +209,12 @@ body {
     width: 16vw;
 }
 
+.product_img_cart {
+    /* height: 50px; */
+    width: 4vw;
+    max-width: 128px;
+}
+
 .product td {
     /* background-color:#de5873; */
     vertical-align: top;

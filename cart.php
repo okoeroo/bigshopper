@@ -16,15 +16,8 @@ if (!initialize()) {
     return;
 }
 
-/* Session management */
-session_mngt();
-
 $head = new Head;
 $head->display();
-
-/* Navigation bar */
-navigation_display(navigation_load());
-
 
 echo '<h2>Winkelwagen</h2>';
 
@@ -55,7 +48,20 @@ if (count($cart) == 0) {
         } else {
             echo '<tr class=cart_product_list_alt_row>';
         }
-            echo '<td>plaatje</td>';
+            echo '<td><center>';
+            /* The ' < count($prod->images) - 1;' is a bug, the amount if always two */
+            for ($x = 0; $x < count($cart_row['prod']->images); $x++) {
+                /* Hardcode the first image to be displayed only */
+                $img_url = product_image_to_url($cart_row['prod']->images[$x]);
+
+                echo '<a href="'. $img_url .'" data-lightbox="'.$cart_row['prod']->sku.':'.$cart_row['prod']->name.'" data-title="'.$cart_row['prod']->sku.': '.$cart_row['prod']->name.' ' .count($cart_row['prod']->images). '">';
+                if ($x === 0) {
+                    /* Only show the first picture out of a gallery per product catelog */
+                    echo '<img class="product_img_cart" src="'. $img_url .'">';
+                }
+                echo '</a>';
+            }
+            echo '</center></td>';
             echo '<td>'.$cart_row['prod']->sku.'</td>';
             echo '<td>'.$cart_row['prod']->name.'</td>';
             $s = strlen($cart_row['prod']->clothing_size) > 0 ? $cart_row['prod']->clothing_size : 'nvt';
@@ -107,11 +113,7 @@ if (count($cart) == 0) {
     echo '</p>';
 */
 
-    echo '<div class="section">';
-    echo '</div>';
-
 }
-
 
 
 $tail = new Tail;
