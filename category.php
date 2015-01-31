@@ -423,13 +423,18 @@ function category_display_load($cat_id) {
             echo '<tr>';
                 echo '<th rowspan="5">';
                 if (count($prod->images) > 0) { 
+                    /* The ' < count($prod->images) - 1;' is a bug, the amount if always two */
+                    for ($x = 0; $x < count($prod->images) - 1; $x++) {
+                        /* Hardcode the first image to be displayed only */
+                        $img_url = product_image_to_url($prod->images[$x]);
 
-                    /* Hardcode the first image to be displayed only */
-                    $img_url = product_image_to_url($prod->images[0]);
-
-                    echo '<a href="'. $img_url .'" data-lightbox="'.$prod->sku.':'.$prod->name.'" data-title="'.$prod->sku.': '.$prod->name.'">';
-                    echo '<img class="product_img" class="html5lightbox" src="'. $img_url .'">';
-                    echo '</a>';
+                        echo '<a href="'. $img_url .'" data-lightbox="'.$prod->sku.':'.$prod->name.'" data-title="'.$prod->sku.': '.$prod->name.' ' .count($prod->images). '">';
+                        if ($x === 0) {
+                            /* Only show the first picture out of a gallery per product catelog */
+                            echo '<img class="product_img" src="'. $img_url .'">';
+                        }
+                        echo '</a>';
+                    }
 
                 }
                 echo '</th>';

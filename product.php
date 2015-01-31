@@ -21,12 +21,7 @@ class Product {
         $this->dimensions    = $row['dimensions'];
         $this->changed_on    = $row['changed_on'];
 
-        if (isset($row['img'])) {
-            $img                 = $row['img'];
-            array_push($this->images, $img);
-        } else {
-            $this->load_associated_images();
-        }
+        $this->load_associated_images();
     }
 
     function fillFromPost() {
