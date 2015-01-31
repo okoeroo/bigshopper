@@ -426,8 +426,10 @@ function category_display_load($cat_id) {
 
                     /* Hardcode the first image to be displayed only */
                     $img_url = product_image_to_url($prod->images[0]);
-                    /* echo '<img width="300px" src="'. $img_url .'">'; */
-                    echo '<img class="product_img" src="'. $img_url .'">';
+
+                    echo '<a href="'. $img_url .'" data-lightbox="'.$prod->sku.':'.$prod->name.'" data-title="'.$prod->sku.': '.$prod->name.'">';
+                    echo '<img class="product_img" class="html5lightbox" src="'. $img_url .'">';
+                    echo '</a>';
 
                 }
                 echo '</th>';

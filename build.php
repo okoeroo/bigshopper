@@ -39,6 +39,10 @@ class Head {
         echo '    <meta name="description" content="' . $this->description . '" />' .  "\n";
         /* echo '    <meta name="viewport" content="width=device-width,initial-scale=1" />' .  "\n"; */
         echo '    <link rel="stylesheet" type="text/css" media="all" href="' . $this->stylesheet . '" />' . "\n";
+        echo '    <link rel="stylesheet" type="text/css" media="all" href="lightbox/css/lightbox.css" />' . "\n";
+
+        echo '    <script type="text/javascript" src="lightbox/js/jquery-1.11.0.min.js"></script>' . "\n";
+        echo '    <script type="text/javascript" src="lightbox/js/lightbox.min.js"></script>' . "\n";
 
         echo '  </head>' . "\n";
         echo '  <body>' . "\n";

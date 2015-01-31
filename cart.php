@@ -101,10 +101,11 @@ if (count($cart) == 0) {
         echo '</tr>';
     echo '</table>';
 
+/*
     echo '<br>';
     echo '<a href="/order.php" class="button">Bestel</a>';
     echo '</p>';
-
+*/
 
     echo '<div class="section">';
     echo '</div>';
