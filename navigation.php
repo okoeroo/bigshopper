@@ -50,14 +50,14 @@ function navigation_display($categories) {
 
     /* Wide navigation bar */
     echo '<div class="nav_wide"><ul class="nav_block_wide">';
-    echo '<a href="/index.php">';
+    echo '<a href="/info.php">';
     echo '    <li class="nav_elem_wide">Info</li>';
     echo '</a>';
-    echo '<a href="/index.php">';
-    echo '    <li class="nav_elem_wide">Algemene voorwaarden bestellingen</li>';
+    echo '<a href="/av.php">';
+    echo '    <li class="nav_elem_wide">Algemene voorwaarden</li>';
     echo '</a>';
-    echo '<a href="/index.php">';
-    echo '    <li class="nav_elem_wide">Algemene voorwaarden voorraad</li>';
+    echo '<a href="/contact.php">';
+    echo '    <li class="nav_elem_wide">Contact</li>';
     echo '</a>';
     echo '</ul></div>';
 
