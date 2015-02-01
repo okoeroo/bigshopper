@@ -13,6 +13,24 @@ class Site {
     public $keywords = array("foo", "bar");
     public $description = "Verkoop";
     public $stylesheet = "/style.css";
+    public $image_dir = "images";
+
+    public $cookie_scope = '.allkidslove.nl';
+    public $cookie_name = 'do_you_believe_in_magic';
+    public $cookie_login_name = 'do_you_believe_in_magic_login';
+    public $cookie_seconds = 1209600; /* 3600 * 24 * 14 */
 }
 
+class Mail {
+    public $SMTPDebug  = 0;
+    public $SMTPAuth   = true;
+    public $SMTPSecure = "ssl";
+    public $Host       = "smtp.gmail.com";
+    public $Port       = 465;
+    public $Username   = "username@example.com";
+    public $Password   = "password";
+    public $AddReplyTo_address = 'contact@example.com';
+    public $AddReplyTo_name    = 'Example contact';
+    public $SetFrom_mailer_address = 'mailer@example.com';
+    public $SetFrom_mailer_name = 'Mailer';
 ?>

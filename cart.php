@@ -6,7 +6,6 @@ require_once 'build.php';
 require_once 'product.php';
 require_once 'navigation.php';
 require_once 'article.php';
-require_once 'session.php';
 require_once 'category.php';
 
 

@@ -8,6 +8,7 @@ function initialize() {
     date_default_timezone_set('Etc/UTC');
 
     $GLOBALS['site'] = new Site;
+    $GLOBALS['mail'] = new Mail;
 
     /* Database */
     $db = db_connect();

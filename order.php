@@ -6,7 +6,6 @@ require_once 'build.php';
 require_once 'product.php';
 require_once 'navigation.php';
 require_once 'article.php';
-require_once 'session.php';
 require_once 'category.php';
 
 
@@ -16,14 +15,8 @@ if (!initialize()) {
     return;
 }
 
-/* Session management */
-session_mngt();
-
 $head = new Head;
 $head->display();
-
-/* Navigation bar */
-navigation_display(navigation_load());
 
 
 echo '<h2>Bestelling afronden</h2>';
@@ -40,16 +33,16 @@ if (count($cart) == 0) {
 
 
     /* Draw category header */
-    echo '<form action="customer_add.php" method="POST" enctype="multipart/form-data">' . "\n";
+    echo '<form action="mail_send.php" method="POST" enctype="multipart/form-data">' . "\n";
     echo '<input type="hidden" name="id" id="id" value="'.$token.'">';
 
-    form_field_text('firstname',    'Voornaam',    '',                  24,     88,  '', False, True, False); echo '</br>';
-    form_field_text('lastname',     'Achternaam',  '',                  24,     88,  '', False, True, False); echo '</br>';
-    form_field_text('streetname',   'Straatnaam',  '',                  24,     160, '', False, True, False); echo '</br>';
-    form_field_text('house_number', 'Huisnummer en toevoeging',  '',    15,     15, '', False, True, False); echo '</br>';
-    form_field_text('zipcode',      'Postcode',    '',                   6,     6,   '1234AB', False, True, False); echo '</br>';
-    form_field_text('stad',         'Woonplaats',  '',                  24,     100, '', False, True, False); echo '</br>';
-    form_field_email('email',       'Emailadres',  '',                  24,     150, '', False, True, False); echo '</br>';
+    form_field_text('firstname',    'Voornaam',    '',                  24,     88,  '',        False, True, False); echo '</br>';
+    form_field_text('lastname',     'Achternaam',  '',                  24,     88,  '',        False, True, False); echo '</br>';
+    form_field_text('streetname',   'Straatnaam',  '',                  24,     160, '',        False, True, False); echo '</br>';
+    form_field_text('house_number', 'Huisnummer en toevoeging',  '',    15,     15,  '',        False, True, False); echo '</br>';
+    form_field_text('zipcode',      'Postcode',    '',                   6,     6,   '1234AB',  False, True, False); echo '</br>';
+    form_field_text('stad',         'Woonplaats',  '',                  24,     100, '',        False, True, False); echo '</br>';
+    form_field_email('email',       'Emailadres',  '',                  24,     150, '',        False, True, False); echo '</br>';
 
     $list = array();
     $row  = array(); $row['value'] = 'sending';      $row['text'] = 'Versturen';     array_push($list, $row);
