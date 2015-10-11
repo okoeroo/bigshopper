@@ -2,6 +2,8 @@
 
 require_once 'globals.php';
 require_once 'config.php';
+require_once 'category.php';
+require_once 'product.php';
 require_once 'mailer.php';
 
 /* Only POST */
@@ -23,10 +25,13 @@ $token = session_get_cookie_value();
 $cart = cart_get_session_products($token);
 
 function body_create_cart_table($cart) {
-    $body = '';
-    $body = $body . '<table id=cart_product_list>';
+    $body = '<html><head><body>';
+
+    $body = $body . 'Bedankt voor uw bestelling bij Allkidslove.nl';
+
+
+    $body = $body . '<table border=1>';
     $body = $body . '<tr>';
-        $body = $body . '<th>Voorbeeld</th>';
         $body = $body . '<th>SKU</th>';
         $body = $body . '<th>Naam</th>';
         $body = $body . '<th>Maat</th>';
@@ -38,25 +43,7 @@ function body_create_cart_table($cart) {
 
     $cnt = 0;
     foreach ($cart as $cart_row) {
-        if ($cnt % 2 === 0) {
-            $body = $body . '<tr>';
-        } else {
-            $body = $body . '<tr class=cart_product_list_alt_row>';
-        }
-            $body = $body . '<td><center>';
-            /* The ' < count($prod->images) - 1;' is a bug, the amount if always two */
-            for ($x = 0; $x < count($cart_row['prod']->images); $x++) {
-                /* Hardcode the first image to be displayed only */
-                $img_url = product_image_to_url($cart_row['prod']->images[$x]);
-
-                $body = $body . '<a href="'. $img_url .'" data-lightbox="'.$cart_row['prod']->sku.':'.$cart_row['prod']->name.'" data-title="'.$cart_row['prod']->sku.': '.$cart_row['prod']->name.' ' .count($cart_row['prod']->images). '">';
-                if ($x === 0) {
-                    /* Only show the first picture out of a gallery per product catelog */
-                    $body = $body . '<img class="product_img_cart" src="'. $img_url .'">';
-                }
-                $body = $body . '</a>';
-            }
-            $body = $body . '</center></td>';
+        $body = $body . '<tr>';
             $body = $body . '<td>'.$cart_row['prod']->sku.'</td>';
             $body = $body . '<td>'.$cart_row['prod']->name.'</td>';
             $s = strlen($cart_row['prod']->clothing_size) > 0 ? $cart_row['prod']->clothing_size : 'nvt';
@@ -70,7 +57,6 @@ function body_create_cart_table($cart) {
             $body = $body . '<td>'.
                     number_format($cart_row['prod']->price * $cart_row['count'], 2, ',', '.')
                 .' euro</td>';
-
         $body = $body . '</tr>';
     }
 
@@ -79,19 +65,20 @@ function body_create_cart_table($cart) {
         $total += $cart_row['prod']->price * $cart_row['count'];
     }
 
-
-        $body = $body . '<tr>'; 
-            $body = $body . '<th>Totaal</th>';
-            $body = $body . '<th>&nbsp;</th>';
-            $body = $body . '<th>&nbsp;</th>';
-            $body = $body . '<th>&nbsp;</th>';
-            $body = $body . '<th>&nbsp;</th>';
-            $body = $body . '<th>&nbsp;</th>';
-            $body = $body . '<th>';
-                $body = $body . number_format($total, 2, ',', '.').' euro';
-            $body = $body . '</th>';
-        $body = $body . '</tr>';
+    $body = $body . '<tr>'; 
+        $body = $body . '<th>Totaal</th>';
+        $body = $body . '<th>&nbsp;</th>';
+        $body = $body . '<th>&nbsp;</th>';
+        $body = $body . '<th>&nbsp;</th>';
+        $body = $body . '<th>&nbsp;</th>';
+        $body = $body . '<th>&nbsp;</th>';
+        $body = $body . '<th>';
+            $body = $body . number_format($total, 2, ',', '.').' euro';
+        $body = $body . '</th>';
+    $body = $body . '</tr>';
     $body = $body . '</table>';
+    $body = $body . '</body>';
+    $body = $body . '</html>';
 
     return $body;
 }

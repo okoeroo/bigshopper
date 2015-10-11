@@ -6,7 +6,7 @@ require_once 'category.php';
 require_once 'product.php';
 
 /* Slotje */
-if ($_SERVER["REMOTE_ADDR"] === '::ffff:195.241.201.236') {
+if ($_SERVER["REMOTE_ADDR"] === '::ffff:195.241.201.236' || $_SERVER["REMOTE_ADDR"] === '195.241.201.236') {
     echo 'Authorized';
 } else {
     echo '<!DOCTYPE HTML>'."\n";
