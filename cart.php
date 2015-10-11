@@ -106,11 +106,11 @@ if (count($cart) == 0) {
         echo '</tr>';
     echo '</table>';
 
-/*
-    echo '<br>';
-    echo '<a href="/order.php" class="button">Bestel</a>';
-    echo '</p>';
-*/
+    if ($_SERVER['REMOTE_ADDR'] == '195.241.201.236') {
+        echo '<br>';
+        echo '<a href="/order.php" class="button">Bestel</a>';
+        echo '</p>';
+    }
 
 }
 

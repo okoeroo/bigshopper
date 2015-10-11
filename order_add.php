@@ -32,7 +32,13 @@ if (!isset($_POST) or !isset($_POST['token'])) {
 }
 
 /* Fetch shoppingcart by session */
-$cart = cart_get_session_products($_POST['token']);
+/* Get all the selected products */
+$token = session_get_cookie_value();
+$cart = cart_get_session_products($token);
+if (count($cart) == 0) {
+    echo '<h3>Uw winkelmandje is leeg, niets te bestellen.</h3>';
+} else {
+}
 
 /* var_dump($cart); */
 

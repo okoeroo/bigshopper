@@ -20,6 +20,9 @@ if (!initialize()) {
 }
 
 
+var_dump($_POST);
+
+
 /* Get all the selected products */
 $token = session_get_cookie_value();
 $cart = cart_get_session_products($token);
@@ -91,7 +94,10 @@ send_mail_from_mailer('Bestelling', $body, 'okoeroo@gmail.com', 'Oscar Koeroo');
 
 echo '<!DOCTYPE HTML>'."\n";
 echo '<html lang="en-US"><head><meta charset="UTF-8">'."\n";
-echo '<meta http-equiv="refresh" content="1;url='.$_SERVER['HTTP_REFERER'].'">';
+echo '<meta http-equiv="refresh" content="10;url='.$_SERVER['HTTP_REFERER'].'">';
+
+print $body;
+
 echo '</head></html>';
 
 

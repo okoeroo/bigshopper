@@ -102,7 +102,7 @@ function section_display($article_id) {
 
 function form_field_text($name, $text, $default_value, $width_chars, $max_chars,
                          $placeholder, $autofocus, $required, $autocomplete) {
-    echo '<label for="'.$name.'">'.$text.':</label>';
+    echo '<label for="'.$name.'">'.$text.'</label>';
     echo '<input type="text" name="'.$name.'" id="'.$name.'"';
     echo ' value="'.$default_value.'" size="'.$width_chars.
          '  " maxlength="'.$max_chars.'" placeholder="'.$placeholder.'"';
@@ -121,7 +121,7 @@ function form_field_text($name, $text, $default_value, $width_chars, $max_chars,
 
 function form_field_email($name, $text, $default_value, $width_chars, $max_chars,
                           $placeholder, $autofocus, $required, $autocomplete) {
-    echo '<label for="'.$name.'">'.$text.':</label>';
+    echo '<label for="'.$name.'">'.$text.'</label>';
     echo '<input type="email" name="'.$name.'" id="'.$name.'"';
     echo ' value="'.$default_value.'" size="'.$width_chars.
          '  " maxlength="'.$max_chars.'" placeholder="'.$placeholder.'"';
@@ -139,7 +139,7 @@ function form_field_email($name, $text, $default_value, $width_chars, $max_chars
 }
 
 function form_field_file($name, $text, $autofocus, $required) {
-    echo '<label for="'.$name.'">'.$text.':</label>';
+    echo '<label for="'.$name.'">'.$text.'</label>';
     echo '<input type="file" name="'.$name.'" id="'.$name.'"';
     if ($autofocus === True) {
         echo ' autofocus';
@@ -152,7 +152,7 @@ function form_field_file($name, $text, $autofocus, $required) {
 }
 
 function form_field_dropdown($name, $text, $list, $selected_value, $autofocus, $required) {
-    echo '<label for="'.$name.'">'.$text.': </label>';
+    echo '<label for="'.$name.'">'.$text.' </label>';
 
     echo '<select name="'.$name.'" id="'.$name.'"';
     if ($autofocus === True) {
@@ -174,7 +174,7 @@ function form_field_dropdown($name, $text, $list, $selected_value, $autofocus, $
 
 function form_field_radio($name, $text, $list, $selected_value, $autofocus, $required) {
     if (! empty($text)) {
-        echo '<label for="'.$name.'">'.$text.': </label>';
+        echo '<label for="'.$name.'">'.$text.' </label>';
     }
 
     foreach ($list as $row) {
@@ -198,6 +198,28 @@ function form_field_radio($name, $text, $list, $selected_value, $autofocus, $req
 
         echo '</input>';
     }
+}
+
+function form_field_checkbox($name, $text, $checked, $autofocus, $required) {
+    if (! empty($text)) {
+        echo '<label for="'.$name.'">'.$text.' </label>';
+    }
+
+    echo '<input class="checkbox" type="checkbox" id="'.$name.'"';
+
+    if ($checked === True) {
+        echo ' checked';
+    }
+    if ($autofocus === True) {
+        echo ' autofocus';
+    }
+    if ($required === True) {
+        echo ' required';
+    }
+
+    echo ' name="'.$name.'" ';
+    echo '>';
+    echo '</input>';
 }
 
 ?>
